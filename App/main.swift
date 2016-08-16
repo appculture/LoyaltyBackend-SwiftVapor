@@ -12,6 +12,10 @@ import HTTP
 */
 let drop = Droplet(providers: [VaporMustache.Provider.self])
 
+drop.get("hello") { request in
+    return "Hello, loyalty!"
+}
+
 /**
     Vapor configuration files are located
     in the root directory of the project
