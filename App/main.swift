@@ -18,7 +18,15 @@ drop.get("hello") { request in
 
 drop.get("mongo") { request in
     let customerDocuments = try MongoDB.shared.Customer.find()
-    return customerDocuments.description
+    let json = customerDocuments.makeDocument().makeExtendedJSON()
+    return json
+}
+
+drop.get("customers") { request in
+    let customerDocuments = try MongoDB.shared.Customer.find()
+    let customerList = Array(customerDocuments).map { Customer.init(document: $0) }
+    let customerListJSON = customerList.flatMap { try? $0!.makeJSON() }
+    return JSON(["Customers" : .array(customerListJSON)])
 }
 
 /**
