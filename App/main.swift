@@ -16,6 +16,11 @@ drop.get("hello") { request in
     return "Hello, loyalty!"
 }
 
+drop.get("mongo") { request in
+    let customerDocuments = try MongoDB.shared.Customer.find()
+    return customerDocuments.description
+}
+
 /**
     Vapor configuration files are located
     in the root directory of the project
