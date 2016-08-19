@@ -1,0 +1,304 @@
+FORMAT: 1A
+HOST: https://royalty-loyalty.herokuapp.com
+
+# Royalty
+
+API for Royalty Loyalty System.
+
+## Customers [/customers]
+
+### Register [POST /customers/register.json]
+
++ Request (application/json)
+
+    + Body
+
+            {
+                "first": "John",
+                "last": "Doe",
+                "email": "john.doe@test.com",
+                "password": "hashed-password"
+            }
+        
++ Response 201 (application/json)
+
+    + Body
+
+            {
+                "customer_id": "57b430aafd36a68dc81c9884",
+                "auth_token": "6AFAB32C-A71C-4527-98A1-A263A5B15F8C"
+            }
+
+### Login [POST /customers/login.json]
+        
++ Request
+
+    + Headers
+    
+            email: john.doe@test.com
+            password: hashed-password
+        
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "auth_token": "6AFAB32C-A71C-4527-98A1-A263A5B15F8C"
+            }
+            
+### Show [GET /customers/show.json?id={id}]
+
++ Parameters
+
+    + id (String) - Customer ID
+
++ Request
+
+    + Headers
+    
+            auth_token: 6AFAB32C-A71C-4527-98A1-A263A5B15F8C
+            
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "first": "John",
+                "last": "Doe",
+                "email": "john.doe@test.com",
+                "amount_spent": 150.00,
+                "loyalty_balance": 5.00,
+                "purchases": [
+                    {
+                        "timestamp": 1404856800000,
+                        "amount": 100.0
+                    },
+                    {
+                        "timestamp": 1504856800000,
+                        "amount": 50.0
+                    }
+                ],
+                "vouchers": [
+                    {
+                        "date_created": 1404856800000,
+                        "expiration_date": 1504856800000,
+                        "value": 5.00,
+                        "redeemed": false,
+                        "expired": true
+                    },
+                    {
+                        "date_created": 1504856800000,
+                        "expiration_date": 1604856800000,
+                        "value": 5.00,
+                        "redeemed": false,
+                        "expired": false
+                    }
+                ]
+            }
+            
+### List [GET /customers/list.json]
+
++ Request
+
+    + Headers
+    
+            auth_token: 6AFAB32C-A71C-4527-98A1-A263A5B15F8C
+            
++ Response 200 (application/json)
+
+    + Body
+
+            [ 
+                {
+                    "first": "John",
+                    "last": "Doe",
+                    "email": "john.doe@test.com",
+                    "amount_spent": 150.00,
+                    "loyalty_balance": 5.00
+                },
+                {
+                    "first": "Jane",
+                    "last": "Doe",
+                    "email": "jane.doe@test.com",
+                    "amount_spent": 250.00,
+                    "loyalty_balance": 10.00
+                }
+            ]
+            
+## Purchases [/purchases]
+            
+### List [GET /purchases/list.json?id={id}]
+
++ Parameters
+
+    + id (String) - Customer ID
+    
++ Request
+
+    + Headers
+
+            auth_token: 6AFAB32C-A71C-4527-98A1-A263A5B15F8C
+        
++ Response 200 (application/json)
+
+    + Body
+
+            [
+                {
+                    "timestamp": 1404856800000,
+                    "amount": 100.0
+                },
+                {
+                    "timestamp": 1504856800000,
+                    "amount": 50.0
+                }
+            ]
+            
+### Create [POST /purchases/create.json]
+
++ Request (application/json)
+
+    + Headers
+
+            auth_token: 6AFAB32C-A71C-4527-98A1-A263A5B15F8C
+
+    + Body
+
+            {
+                "customer_id": "57b430aafd36a68dc81c9884",
+                "amount": 85.00,
+                "redeem_voucher_ids": ["1", "2"]
+            }
+        
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "success": true
+            }
+            
+## Vouchers [/vouchers]
+            
+### List [GET /vouchers/list.json?id={id}]
+
++ Parameters
+
+    + id (String) - Customer ID
+    
++ Request
+
+    + Headers
+
+            auth_token: 6AFAB32C-A71C-4527-98A1-A263A5B15F8C
+        
++ Response 200 (application/json)
+
+    + Body
+
+            [
+                {
+                    "date_created": 1404856800000,
+                    "expiration_date": 1504856800000,
+                    "value": 5.00,
+                    "redeemed": false,
+                    "expired": true
+                },
+                {
+                    "date_created": 1504856800000,
+                    "expiration_date": 1604856800000,
+                    "value": 5.00,
+                    "redeemed": false,
+                    "expired": false
+                }
+            ]
+            
+### Create [POST /vouchers/create.json]
+
++ Request (application/json)
+
+    + Headers
+
+            auth_token: 6AFAB32C-A71C-4527-98A1-A263A5B15F8C
+
+    + Body
+
+            {
+                "customer_id": "57b430aafd36a68dc81c9884",
+                "amount": 85.00,
+                "redeem_voucher_ids": ["1", "2"]
+            }
+        
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "success": true
+            }
+            
+### Redeem [POST /vouchers/redeem.json]
+
++ Request (application/json)
+
+    + Headers
+
+            auth_token: 6AFAB32C-A71C-4527-98A1-A263A5B15F8C
+
+    + Body
+
+            [
+                "1", "2", "3"
+            ]
+        
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "success": true
+            }
+            
+## Config [/config]
+            
+### Show [GET /config/show.json]
+    
++ Request
+
+    + Headers
+
+            auth_token: 6AFAB32C-A71C-4527-98A1-A263A5B15F8C
+        
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "minimum_amount": 100.00,
+                "voucher_value": 5.00,
+                "voucher_duration": 360
+            }
+            
+### Update [POST /config/update.json]
+
++ Request (application/json)
+
+    + Headers
+
+            auth_token: 6AFAB32C-A71C-4527-98A1-A263A5B15F8C
+
+    + Body
+
+            {
+                "minimum_amount": 100.00,
+                "voucher_value": 5.00,
+                "voucher_duration": 360
+            }
+        
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "success": true
+            }
