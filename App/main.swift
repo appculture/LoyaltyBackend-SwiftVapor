@@ -14,12 +14,15 @@ drop.get("mongo") { request in
     return json
 }
 
-drop.get("customers") { request in
+drop.get("mongo-customers") { request in
     let customerDocuments = try MongoDB.shared.Customer.find()
     let customerList = Array(customerDocuments).map { Customer.init(document: $0) }
     let customerListJSON = customerList.flatMap { try? $0!.makeJSON() }
     return JSON(["Customers" : .array(customerListJSON)])
 }
+
+let customerCollection = CustomerCollection()
+drop.collection(customerCollection)
 
 drop.middleware.append(SampleMiddleware())
 
