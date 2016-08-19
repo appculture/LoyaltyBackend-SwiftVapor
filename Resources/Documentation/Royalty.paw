@@ -5,7 +5,7 @@
     <databaseInfo>
         <version>134481920</version>
         <UUID>5D7CFD38-D396-411E-A75C-CDB0A9702936</UUID>
-        <nextObjectID>117</nextObjectID>
+        <nextObjectID>119</nextObjectID>
         <metadata>
             <plist version="1.0">
                 <dict>
@@ -63,7 +63,7 @@
     <object type="LMREQUEST" id="z102">
         <attribute name="body" type="string">["{\\n  \\"first\\": \\"John\\",\\n  \\"last\\": \\"Doe\\",\\n  \\"email\\": \\"john.doe@test.com\\",\\n  \\"password\\": \\"hello123\\"\\n}"]</attribute>
         <attribute name="uuid" type="string">8B2DDB95-24E3-4790-8A9E-A27715CB4600</attribute>
-        <attribute name="url" type="string">[{"data":{"environmentVariable":"42D1B1DB-D1BF-4393-9080-4750BB2983F1"},"identifier":"com.luckymarmot.EnvironmentVariableDynamicValue"},"customers\\/register.json"]</attribute>
+        <attribute name="url" type="string">[{"data":{"environmentVariable":"42D1B1DB-D1BF-4393-9080-4750BB2983F1"},"identifier":"com.luckymarmot.EnvironmentVariableDynamicValue"},"customers"]</attribute>
         <attribute name="storecookies" type="bool">1</attribute>
         <attribute name="sendcookies" type="bool">1</attribute>
         <attribute name="redirectmethod" type="bool">0</attribute>
@@ -74,7 +74,7 @@
         <attribute name="name" type="string">Register</attribute>
         <relationship name="parent" type="0/1" destination="LMREQUESTTREEITEM"></relationship>
         <relationship name="children" type="0/0" destination="LMREQUESTTREEITEM"></relationship>
-        <relationship name="headers" type="0/0" destination="LMKEYVALUE" idrefs="z114 z109"></relationship>
+        <relationship name="headers" type="0/0" destination="LMKEYVALUE" idrefs="z109 z114"></relationship>
     </object>
     <object type="LMENVIRONMENT" id="z103">
         <attribute name="uuid" type="string">55359E13-5A93-46D8-A587-6E073F7985AF</attribute>

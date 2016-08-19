@@ -9,7 +9,7 @@ class CustomerCollection: RouteCollection {
     func build<B: RouteBuilder where B.Value == Wrapped>(_ builder: B) {
         let customers = builder.grouped("customers")
 
-        customers.post("register.json") { request in
+        customers.post { request in
             if
                 let contentType = request.headers["Content-Type"],
                 contentType == "application/json",

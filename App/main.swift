@@ -21,8 +21,26 @@ drop.get("mongo-customers") { request in
     return JSON(["Customers" : .array(customerListJSON)])
 }
 
-let customerCollection = CustomerCollection()
-drop.collection(customerCollection)
+//let customerCollection = CustomerCollection()
+//drop.collection(customerCollection)
+
+drop.post("customers") { request in
+    guard
+        let first = request.data["first"].string,
+        let last = request.data["last"].string,
+        let email = request.data["email"].string,
+        let password = request.data["password"].string
+    else {
+        throw Abort.badRequest
+    }
+    
+    return try JSON([
+        "first": first,
+        "last": last,
+        "email": email,
+        "password": password,
+    ])
+}
 
 drop.middleware.append(SampleMiddleware())
 

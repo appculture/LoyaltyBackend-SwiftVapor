@@ -1,5 +1,6 @@
 import Vapor
 import MongoKitten
+import HTTP
 
 final class Customer {
 
@@ -57,6 +58,20 @@ extension Customer: StringInitializable {
         }
         
         self.init(email: email, password: password)
+    }
+    
+}
+
+extension Customer: ResponseRepresentable {
+    
+    public func makeResponse() throws -> Response {
+        let json = try JSON([
+            "email": email,
+            "password": password
+        ])
+        
+        let response = try Response(status: Status.found, json: json)
+        return response
     }
     
 }
