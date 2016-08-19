@@ -9,8 +9,23 @@ class CustomerCollection: RouteCollection {
     func build<B: RouteBuilder where B.Value == Wrapped>(_ builder: B) {
         let customers = builder.grouped("customers")
 
-        customers.get("register.json") { request in
-            return "register.json"
+        customers.post("register.json") { request in
+            if
+                let contentType = request.headers["Content-Type"],
+                contentType == "application/json",
+                
+                let bytes = request.body.bytes,
+                let json = try? JSON(bytes: bytes),
+                
+                let first = json.object?["first"].string,
+                let last = json.object?["last"].string,
+                let email = json.object?["email"].string,
+                let password = json.object?["password"].string
+            {
+                return "Body:\n first: \(first)\n last: \(last)\n email: \(email)\n password: \(password)"
+            } else {
+                throw Abort.badRequest
+            }
         }
 
         customers.get("login.json") { request in
