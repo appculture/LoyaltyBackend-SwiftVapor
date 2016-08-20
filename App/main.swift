@@ -2,7 +2,7 @@ import Vapor
 import VaporMustache
 import HTTP
 
-let drop = Droplet(providers: [VaporMustache.Provider.self])
+let drop = Droplet(preparations: [User.self], providers: [VaporMustache.Provider.self, MongoProvider.self])
 
 drop.get("/") { request in
     return "Hello, Royalty!"
@@ -24,6 +24,7 @@ drop.get("mongo-customers") { request in
 //let customerCollection = CustomerCollection()
 //drop.collection(customerCollection)
 
+/*
 drop.post("customers") { request in
     guard
         let first = request.data["first"].string,
@@ -41,6 +42,30 @@ drop.post("customers") { request in
         "password": password,
     ])
 }
+*/
+
+let customers = CustomerController(droplet: drop)
+drop.resource("customers", customers)
+
+
+drop.post("users") { request in
+    guard
+        let name = request.data["name"].string
+    else {
+        throw Abort.badRequest
+    }
+    
+    var user = User(name: name)
+    
+    do {
+        try user.save()
+    } catch {
+        print(error)
+    }
+    
+    return user
+}
+
 
 drop.middleware.append(SampleMiddleware())
 
