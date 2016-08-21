@@ -5,6 +5,8 @@ import HTTP
 
 final class Customer: Model {
     
+    static var entity: String = "customer"
+    
     var id: Node?
     
     var first: String
@@ -38,7 +40,7 @@ final class Customer: Model {
     }
     
     static func prepare(_ database: Fluent.Database) throws {
-        try database.create("customers") { users in
+        try database.create("customer") { users in
             users.id()
             users.string("first")
             users.string("last")
@@ -48,7 +50,7 @@ final class Customer: Model {
     }
     
     static func revert(_ database: Fluent.Database) throws {
-        try database.delete("customers")
+        try database.delete("customer")
     }
     
 }

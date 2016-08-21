@@ -36,10 +36,29 @@ final class CustomerController: ResourceRepresentable {
     }
     
     func update(request: Request, item customer: Customer) throws -> ResponseRepresentable {
-        return customer.makeJSON()
+        guard
+            let first = request.data["first"].string,
+            let last = request.data["last"].string,
+            let email = request.data["email"].string,
+            let password = request.data["password"].string
+        else {
+            throw Abort.badRequest
+        }
+        
+        var changedCustomer = customer
+        
+        changedCustomer.first = first
+        changedCustomer.last = last
+        changedCustomer.email = email
+        changedCustomer.password = password
+        
+        try changedCustomer.save()
+        
+        return customer
     }
     
     func destroy(request: Request, item customer: Customer) throws -> ResponseRepresentable {
+        try customer.delete()
         return customer
     }
     
