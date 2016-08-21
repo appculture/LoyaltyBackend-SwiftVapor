@@ -73,3 +73,11 @@ final class CustomerController: ResourceRepresentable {
     }
     
 }
+
+extension CustomerController {
+    
+    func login(request: Request, item: Customer) throws -> ResponseRepresentable {
+        throw Abort.custom(status: Status.notImplemented, message: "Not yet implemented")
+    }
+    
+}

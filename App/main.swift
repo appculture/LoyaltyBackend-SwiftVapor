@@ -15,6 +15,10 @@ drop.get("/") { request in
 let customers = CustomerController(droplet: drop)
 drop.resource("customers", customers)
 
+drop.post("customers", Customer.self, "login") { request, customer in
+    return try customers.login(request: request, item: customer)
+}
+
 drop.middleware.append(SampleMiddleware())
 
 let port = drop.config["app", "port"].int ?? 80
