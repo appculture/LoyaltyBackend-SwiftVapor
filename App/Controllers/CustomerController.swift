@@ -10,11 +10,8 @@ final class CustomerController: ResourceRepresentable {
     }
     
     func index(request: Request) throws -> ResponseRepresentable {
-        return try JSON([
-            "controller": "CustomerController.index"
-        ])
-        
-        // return JSON(try Customer.all().map { $0.makeJSON() })
+        let customers = try Customer.all().map { $0.makeJSON() }
+        return JSON(customers)
     }
     
     func store(request: Request) throws -> ResponseRepresentable {
@@ -29,34 +26,20 @@ final class CustomerController: ResourceRepresentable {
         
         var customer = Customer(first: first, last: last, email: email, password: password)
         
-        do {
-            try customer.save()
-        } catch {
-            print(error)
-        }
+        try customer.save()
         
         return customer
     }
     
-    /**
-    	Since item is of type User,
-    	only instances of user will be received
-     */
-    func show(request: Request, item customer: Customer) throws -> ResponseRepresentable {
-        //User can be used like JSON with JsonRepresentable
-        return try JSON([
-            "controller": "CustomerController.show",
-            "customer": customer
-        ])
+    func show(request: Request, item customer: Customer) throws -> ResponseRepresentable {        
+        return customer
     }
     
     func update(request: Request, item customer: Customer) throws -> ResponseRepresentable {
-        //User is JsonRepresentable
-        return try customer.makeJSON()
+        return customer.makeJSON()
     }
     
     func destroy(request: Request, item customer: Customer) throws -> ResponseRepresentable {
-        //User is ResponseRepresentable by proxy of JsonRepresentable
         return customer
     }
     

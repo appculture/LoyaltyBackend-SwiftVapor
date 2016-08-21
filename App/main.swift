@@ -1,15 +1,18 @@
 import Vapor
 import VaporMustache
 import HTTP
+import Fluent
 import VaporMySQL
 
-//let drop = Droplet(preparations: [User.self], providers: [VaporMustache.Provider.self, MongoProvider.self])
-let drop = Droplet(preparations: [User.self], providers: [VaporMustache.Provider.self, VaporMySQL.Provider.self])
+let preparations: [Preparation.Type] = [Customer.self]
+let providers: [Vapor.Provider.Type] = [VaporMustache.Provider.self, VaporMySQL.Provider.self]
+let drop = Droplet(preparations: preparations, providers: providers)
 
 drop.get("/") { request in
     return "Hello, Royalty!"
 }
 
+/*
 drop.get("mongo") { request in
     let customerDocuments = try MongoDB.shared.Customer.find()
     let json = customerDocuments.makeDocument().makeExtendedJSON()
@@ -23,9 +26,10 @@ drop.get("mongo-customers") { request in
     return JSON(["Customers" : .array(customerListJSON)])
 }
 
-//let customerCollection = CustomerCollection()
-//drop.collection(customerCollection)
-
+let customerCollection = CustomerCollection()
+drop.collection(customerCollection)
+*/
+ 
 /*
 drop.post("customers") { request in
     guard
@@ -48,26 +52,6 @@ drop.post("customers") { request in
 
 let customers = CustomerController(droplet: drop)
 drop.resource("customers", customers)
-
-
-drop.post("users") { request in
-    guard
-        let name = request.data["name"].string
-    else {
-        throw Abort.badRequest
-    }
-    
-    var user = User(name: name)
-    
-    do {
-        try user.save()
-    } catch {
-        print(error)
-    }
-    
-    return user
-}
-
 
 drop.middleware.append(SampleMiddleware())
 
