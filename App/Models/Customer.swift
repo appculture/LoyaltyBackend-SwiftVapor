@@ -19,16 +19,22 @@ final class User: Model {
     
     func makeNode() throws -> Node {
         return try Node(node: [
+            "id": id,
             "name": name
         ])
     }
     
     static func prepare(_ database: Fluent.Database) throws {
         //
+        try database.create("users") { users in
+            users.id()
+            users.string("name")
+        }
     }
     
     static func revert(_ database: Fluent.Database) throws {
         //
+        try database.delete("users")
     }
 }
 

@@ -1,8 +1,10 @@
 import Vapor
 import VaporMustache
 import HTTP
+import VaporMySQL
 
-let drop = Droplet(preparations: [User.self], providers: [VaporMustache.Provider.self, MongoProvider.self])
+//let drop = Droplet(preparations: [User.self], providers: [VaporMustache.Provider.self, MongoProvider.self])
+let drop = Droplet(preparations: [User.self], providers: [VaporMustache.Provider.self, VaporMySQL.Provider.self])
 
 drop.get("/") { request in
     return "Hello, Royalty!"
