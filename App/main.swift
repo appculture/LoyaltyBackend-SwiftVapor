@@ -1,27 +1,31 @@
 import Vapor
+import Fluent
+import VaporMySQL
 import VaporMustache
 import HTTP
 
-let drop = Droplet(providers: [VaporMustache.Provider.self])
+let mustache = VaporMustache.Provider(withIncludes: [
+    "header" : "Includes/header.mustache",
+    "footer" : "Includes/footer.mustache"
+])
+
+let preparations: [Preparation.Type] = [Customer.self]
+let providers: [Vapor.Provider.Type] = [VaporMySQL.Provider.self]
+let drop = Droplet(preparations: preparations, providers: providers, initializedProviders: [mustache])
 
 drop.get("/") { request in
     return "Hello, Royalty!"
 }
 
-drop.get("mongo") { request in
-    let customerDocuments = try MongoDB.shared.Customer.find()
-    let json = customerDocuments.makeDocument().makeExtendedJSON()
-    return json
+let customers = CustomerController(droplet: drop)
+drop.resource("customers", customers)
+
+drop.post("customers", Customer.self, "login") { request, customer in
+    return try customers.login(request: request, item: customer)
 }
 
-drop.get("customers") { request in
-    let customerDocuments = try MongoDB.shared.Customer.find()
-    let customerList = Array(customerDocuments).map { Customer.init(document: $0) }
-    let customerListJSON = customerList.flatMap { try? $0!.makeJSON() }
-    return JSON(["Customers" : .array(customerListJSON)])
-}
-
-drop.middleware.append(SampleMiddleware())
+let customerMiddleware = CustomerMiddleware(droplet: drop)
+drop.middleware.append(customerMiddleware)
 
 let port = drop.config["app", "port"].int ?? 80
 

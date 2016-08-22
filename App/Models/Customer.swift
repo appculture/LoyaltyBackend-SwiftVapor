@@ -1,62 +1,102 @@
 import Vapor
+import Fluent
 import MongoKitten
+import HTTP
 
-final class Customer {
-
+final class Customer: Model {
+    
+    static var entity: String = "customer"
+    
+    var id: Node?
+    
+    var first: String
+    var last: String
     var email: String
     var password: String
     
-    init(email: String, password: String) {
+    init(first: String, last: String, email: String, password: String) {
+        self.first = first
+        self.last = last
         self.email = email
         self.password = password
     }
     
-}
-
-extension Customer: JSONRepresentable {
+    init(node: Node, in context: Context) throws {
+        id = try node.extract("id")
+        first = try node.extract("first")
+        last = try node.extract("last")
+        email = try node.extract("email")
+        password = try node.extract("password")
+    }
     
-    func makeJSON() throws -> JSON {
-        do {
-            return try JSON([
-                "email": "\(email)",
-                "password": "\(password)"
-            ])
-        } catch {
-            throw error
+    func makeNode() throws -> Node {
+        return try Node(node: [
+            "id": id,
+            "first": first,
+            "last": last,
+            "email": email,
+            "password": password
+        ])
+    }
+    
+    static func prepare(_ database: Fluent.Database) throws {
+        try database.create("customer") { users in
+            users.id()
+            users.string("first")
+            users.string("last")
+            users.string("email")
+            users.string("password")
         }
+    }
+    
+    static func revert(_ database: Fluent.Database) throws {
+        try database.delete("customer")
     }
     
 }
 
-extension Customer: StringInitializable {
+extension Customer {
     
-    convenience init?(from string: String) throws {
-        self.init(email: string)
+    func makeResponse() throws -> Response {
+        let response = Response()
+        response.customer = self
+        return response
     }
     
-    convenience init?(email: String) {
-        do {
-            guard let customer = try MongoDB.shared.Customer.findOne(matching: ["email": ~email]) else {
-                print("Failed to find customer for email: \(email)")
-                return nil
-            }
-            self.init(document: customer)
+}
+
+extension Response {
+    
+    var customer: Customer? {
+        get {
+            return storage["customer"] as? Customer
         }
-        catch {
-            print("Failed to find customer for email: \(email)")
-            return nil
+        set(customer) {
+            storage["customer"] = customer
         }
     }
     
-    convenience init?(document: Document) {
-        guard
-            let email = document["email"].stringValue,
-            let password = document["password"].stringValue
-        else {
-            return nil
+    var customers: [Customer]? {
+        get {
+            return storage["customers"] as? [Customer]
         }
-        
-        self.init(email: email, password: password)
+        set(customers) {
+            storage["customers"] = customers
+        }
+    }
+    
+}
+
+extension Sequence where Iterator.Element == Customer {
+    
+    func makeJSON() -> JSON {
+        return .array(self.map { $0.makeJSON() })
+    }
+
+    func makeResponse() throws -> Response {
+        let response = Response()
+        response.customers = Array(self)
+        return response
     }
     
 }
