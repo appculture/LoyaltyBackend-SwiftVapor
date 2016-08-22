@@ -19,7 +19,8 @@ drop.post("customers", Customer.self, "login") { request, customer in
     return try customers.login(request: request, item: customer)
 }
 
-drop.middleware.append(SampleMiddleware())
+let customerMiddleware = CustomerMiddleware(droplet: drop)
+drop.middleware.append(customerMiddleware)
 
 let port = drop.config["app", "port"].int ?? 80
 

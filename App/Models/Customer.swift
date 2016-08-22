@@ -54,3 +54,49 @@ final class Customer: Model {
     }
     
 }
+
+extension Customer {
+    
+    func makeResponse() throws -> Response {
+        let response = Response()
+        response.customer = self
+        return response
+    }
+    
+}
+
+extension Response {
+    
+    var customer: Customer? {
+        get {
+            return storage["customer"] as? Customer
+        }
+        set(customer) {
+            storage["customer"] = customer
+        }
+    }
+    
+    var customers: [Customer]? {
+        get {
+            return storage["customers"] as? [Customer]
+        }
+        set(customers) {
+            storage["customers"] = customers
+        }
+    }
+    
+}
+
+extension Sequence where Iterator.Element == Customer {
+    
+    func makeJSON() -> JSON {
+        return .array(self.map { $0.makeJSON() })
+    }
+
+    func makeResponse() throws -> Response {
+        let response = Response()
+        response.customers = Array(self)
+        return response
+    }
+    
+}

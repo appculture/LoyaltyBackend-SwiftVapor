@@ -10,8 +10,7 @@ final class CustomerController: ResourceRepresentable {
     }
     
     func index(request: Request) throws -> ResponseRepresentable {
-        let customers = try Customer.all().map { $0.makeJSON() }
-        return JSON(customers)
+        return try Customer.all().makeResponse()
     }
     
     func store(request: Request) throws -> ResponseRepresentable {
