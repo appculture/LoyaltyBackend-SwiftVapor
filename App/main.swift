@@ -4,9 +4,14 @@ import VaporMySQL
 import VaporMustache
 import HTTP
 
+let mustache = VaporMustache.Provider(withIncludes: [
+    "header" : "Includes/header.mustache",
+    "footer" : "Includes/footer.mustache"
+])
+
 let preparations: [Preparation.Type] = [Customer.self]
-let providers: [Vapor.Provider.Type] = [VaporMustache.Provider.self, VaporMySQL.Provider.self]
-let drop = Droplet(preparations: preparations, providers: providers)
+let providers: [Vapor.Provider.Type] = [VaporMySQL.Provider.self]
+let drop = Droplet(preparations: preparations, providers: providers, initializedProviders: [mustache])
 
 drop.get("/") { request in
     return "Hello, Royalty!"
