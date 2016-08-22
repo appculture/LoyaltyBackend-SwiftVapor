@@ -1,6 +1,20 @@
-{{# customers }}
-- {{ id }}
-- {{ first }}
-- {{ last }}
-- {{ email }}
-{{/ customers }}
+{{>header}}
+<div id="customers-wrapper">
+<table>
+    <tr>
+        <th>ID</th>
+        <th>First</th>
+        <th>Last</th>
+        <th>Email</th>
+    </tr>
+    {{# customers }}
+    <tr>
+        <td>{{ id }}</td>
+        <td>{{ first }}</td>
+        <td>{{ last }}</td>
+        <td>{{ email }}</td>
+    </tr>
+    {{/ customers }}
+</table>
+</div>
+{{>footer}}
