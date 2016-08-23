@@ -9,7 +9,7 @@ let mustache = VaporMustache.Provider(withIncludes: [
     "footer" : "Includes/footer.mustache"
 ])
 
-let preparations: [Preparation.Type] = [Customer.self]
+let preparations: [Preparation.Type] = [Customer.self, Purchase.self]
 let providers: [Vapor.Provider.Type] = [VaporMySQL.Provider.self]
 let drop = Droplet(preparations: preparations, providers: providers, initializedProviders: [mustache])
 
@@ -26,6 +26,12 @@ drop.post("customers", Customer.self, "login") { request, customer in
 
 let customerMiddleware = CustomerMiddleware(droplet: drop)
 drop.middleware.append(customerMiddleware)
+
+let purchases = PurchaseController(droplet: drop)
+drop.resource("purchases", purchases)
+
+let purchaseMiddleware = PurchaseMiddleware(droplet: drop)
+drop.middleware.append(purchaseMiddleware)
 
 let port = drop.config["app", "port"].int ?? 80
 
