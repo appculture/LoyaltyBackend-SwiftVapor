@@ -66,21 +66,6 @@ extension Purchase {
 
 extension Purchase {
     
-    var date: Date {
-        return Date(timeIntervalSince1970: Double(timestamp))
-    }
-    
-    var readableDate: String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .short
-        return formatter.string(from: date)
-    }
-    
-}
-
-extension Purchase {
-    
     func makeResponse() throws -> Response {
         let response = Response()
         response.purchase = self
