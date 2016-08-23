@@ -61,6 +61,10 @@ extension Customer {
         return children()
     }
     
+    func vouchers() throws -> Children<Voucher> {
+        return children()
+    }
+    
 }
 
 extension Customer {

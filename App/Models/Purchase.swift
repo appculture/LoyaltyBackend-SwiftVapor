@@ -9,10 +9,10 @@ final class Purchase: Model {
     
     var id: Node?
     
-    var customerID: Node
-    
     var timestamp: Int
     var amount: Double
+    
+    var customerID: Node
     
     convenience init(amount: Double, customerID: Node) {
         let timestamp = Int(Date().timeIntervalSince1970)

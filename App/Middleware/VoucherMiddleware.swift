@@ -4,6 +4,7 @@ import HTTP
 class VoucherMiddleware: Middleware {
     
     let drop: Droplet
+    
     init(droplet: Droplet) {
         drop = droplet
     }
@@ -38,7 +39,7 @@ class VoucherMiddleware: Middleware {
                             "redeemed": voucher.redeemed
                         ]
                     }
-                    ]).makeResponse()
+                ]).makeResponse()
             } else {
                 response.json = vouchers.makeJSON()
             }
