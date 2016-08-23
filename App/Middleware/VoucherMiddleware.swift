@@ -30,7 +30,7 @@ class VoucherMiddleware: Middleware {
         if let vouchers = response.vouchers {
             if request.accept.prefers("html") {
                 return try drop.view("vouchers.mustache", context: [
-                    "vouchers": vouchers.map { voucher in
+                    "vouchers": vouchers.map { voucher -> [String : Any] in
                         return [
                             "id": voucher.id.string ?? "",
                             "timestamp": voucher.timestamp,
