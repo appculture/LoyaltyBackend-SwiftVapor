@@ -7,16 +7,22 @@ final class CustomerSession: Model {
     
     static var entity: String = "customer_session"
     
+    // MARK: - Properties
+    
     var id: Node?
     
     var token: String
     
     var customerID: Node
     
+    // MARK: - Init
+    
     init(token: String, customerID: Node) {
         self.token = token
         self.customerID = customerID
     }
+    
+    // MARK: - NodeConvertible
     
     init(node: Node, in context: Context) throws {
         id = try node.extract("id")
@@ -32,6 +38,8 @@ final class CustomerSession: Model {
         ])
     }
     
+    // MARK: - Preparation
+    
     static func prepare(_ database: Fluent.Database) throws {
         try database.create("customer_session") { customerSession in
             customerSession.id()
@@ -45,6 +53,8 @@ final class CustomerSession: Model {
     }
     
 }
+
+// MARK: - Override
 
 extension CustomerSession {
     

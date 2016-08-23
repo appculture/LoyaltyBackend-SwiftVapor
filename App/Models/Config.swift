@@ -7,6 +7,10 @@ final class Config: Model {
     
     static var entity: String = "config"
     
+    static var `default`: Config = Config(purchaseAmount: 100.0, voucherValue: 5.0, voucherDuration: 360)
+    
+    // MARK: - Properties
+    
     var id: Node?
     
     var purchaseAmount: Double
@@ -49,7 +53,7 @@ final class Config: Model {
             config.int("voucher_duration")
         }
         
-        var defaultConfig = Config(purchaseAmount: 100.0, voucherValue: 5.0, voucherDuration: 360)
+        var defaultConfig = Config.`default`
         try defaultConfig.save()
     }
     
