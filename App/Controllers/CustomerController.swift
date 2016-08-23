@@ -2,6 +2,7 @@ import Vapor
 import HTTP
 
 final class CustomerController: ResourceRepresentable {
+    
     typealias Item = Customer
     
     let drop: Droplet

@@ -9,10 +9,10 @@ final class Purchase: Model {
     
     var id: Node?
     
-    var customerID: Node
-    
     var timestamp: Int
     var amount: Double
+    
+    var customerID: Node
     
     convenience init(amount: Double, customerID: Node) {
         let timestamp = Int(Date().timeIntervalSince1970)
@@ -60,21 +60,6 @@ extension Purchase {
     
     func customer() throws -> Parent<Customer> {
         return try parent(customerID)
-    }
-    
-}
-
-extension Purchase {
-    
-    var date: Date {
-        return Date(timeIntervalSince1970: Double(timestamp))
-    }
-    
-    var readableDate: String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .short
-        return formatter.string(from: date)
     }
     
 }

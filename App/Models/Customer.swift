@@ -40,17 +40,17 @@ final class Customer: Model {
     }
     
     static func prepare(_ database: Fluent.Database) throws {
-        try database.create("customer") { users in
-            users.id()
-            users.string("first")
-            users.string("last")
-            users.string("email")
-            users.string("password")
+        try database.create(entity) { customer in
+            customer.id()
+            customer.string("first")
+            customer.string("last")
+            customer.string("email")
+            customer.string("password")
         }
     }
     
     static func revert(_ database: Fluent.Database) throws {
-        try database.delete("customer")
+        try database.delete(entity)
     }
     
 }
@@ -58,6 +58,10 @@ final class Customer: Model {
 extension Customer {
     
     func purchases() throws -> Children<Purchase> {
+        return children()
+    }
+    
+    func vouchers() throws -> Children<Voucher> {
         return children()
     }
     
