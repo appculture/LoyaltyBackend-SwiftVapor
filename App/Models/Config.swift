@@ -13,11 +13,15 @@ final class Config: Model {
     var voucherValue: Double
     var voucherDuration: Int
     
+    // MARK: - Init
+    
     init(purchaseAmount: Double, voucherValue: Double, voucherDuration: Int) {
         self.purchaseAmount = purchaseAmount
         self.voucherValue = voucherValue
         self.voucherDuration = voucherDuration
     }
+    
+    // MARK: - NodeConvertible
     
     init(node: Node, in context: Context) throws {
         id = try node.extract("id")
@@ -35,6 +39,8 @@ final class Config: Model {
         ])
     }
     
+    // MARK: - Preparation
+    
     static func prepare(_ database: Fluent.Database) throws {
         try database.create(entity) { config in
             config.id()
@@ -51,27 +57,14 @@ final class Config: Model {
         try database.delete(entity)
     }
     
-}
-
-extension Config {
+    // MARK: - Override
     
-    func makeResponse() throws -> Response {
-        let response = Response()
-        response.config = self
-        return response
-    }
-    
-}
-
-extension Response {
-    
-    var config: Config? {
-        get {
-            return storage["config"] as? Config
-        }
-        set(config) {
-            storage["config"] = purchase
-        }
+    public func makeJSON() -> JSON {
+        return try! JSON([
+            "purchase_amount": purchaseAmount,
+            "voucher_value": voucherValue,
+            "voucher_duration": voucherDuration
+        ])
     }
     
 }

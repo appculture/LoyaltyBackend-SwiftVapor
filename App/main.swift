@@ -64,11 +64,25 @@ drop.middleware.append(voucherMiddleware)
 
 // MARK: - Config
 
-let config = ConfigController(droplet: drop)
-drop.resource("config", config)
+let configController = ConfigController(droplet: drop)
 
-let configMiddleware = ConfigMiddleware(droplet: drop)
-drop.middleware.append(configMiddleware)
+drop.get("config") { request in
+    guard let config = try Config.all().first
+    else {
+        throw Abort.serverError
+    }
+    
+    return try configController.show(request: request, item: config)
+}
+
+drop.put("config") { request in
+    guard let config = try Config.all().first
+    else {
+        throw Abort.serverError
+    }
+    
+    return try configController.update(request: request, item: config)
+}
 
 // MARK: - Serve
 
