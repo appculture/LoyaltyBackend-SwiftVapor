@@ -86,25 +86,25 @@ extension CustomerController {
         }
         
         guard
-            let customer: Customer = try Customer.query().filter("email", username).first()
+            let customer: Customer = try Customer.query().filter("email", username).first(),
+            let customerID = customer.id
         else {
             throw Abort.custom(status: Status.notImplemented, message: "No Customer")
         }
         
-        print(customer.password)
         if customer.password == password {
             
-            let customerID = customer.id?.string
             let randomUUID = NSUUID().uuidString
 
             guard
-                let previosSession: CustomerSession = try CustomerSession.query().filter("customer_id", customerID!).first()
-                else {
-                    var customerSession: CustomerSession = CustomerSession(authUUID: randomUUID, customerID: customerID!)
-                    try customerSession.save()
-                    return customerSession.makeJSON()
+                let previousSession: CustomerSession = try CustomerSession.query().filter("customer_id", customerID).first()
+            else {
+                var customerSession: CustomerSession = CustomerSession(token: randomUUID, customerID: customerID)
+                try customerSession.save()
+                return customerSession.makeJSON()
             }
-            return previosSession.makeJSON()
+            
+            return previousSession.makeJSON()
         }
         
         throw Abort.custom(status: Status.internalServerError, message: "Server Error!")
@@ -112,16 +112,22 @@ extension CustomerController {
     
     func logout(request: Request) throws -> ResponseRepresentable {
         guard
-            let authUUID: String = request.data["auth_uuid"].string
-            else {
-                throw Abort.custom(status: Status.preconditionFailed, message: "Missing parameter")
+            let token: String = request.data["token"].string
+        else {
+            throw Abort.custom(status: Status.preconditionFailed, message: "Missing parameter")
         }
+        
         guard
-            let previosSession: CustomerSession = try CustomerSession.query().filter("auth_uuid", authUUID).first()
-            else {
-                throw Abort.custom(status: Status.internalServerError, message: "Server Error!")
+            let previousSession: CustomerSession = try CustomerSession.query().filter("token", token).first()
+        else {
+            throw Abort.custom(status: Status.internalServerError, message: "Server Error!")
         }
-        try previosSession.delete()
-        throw Abort.custom(status: Status.ok, message: "Logout Succesfuly!")
+        
+        try previousSession.delete()
+        
+        return try JSON([
+            "Status": "OK",
+            "Message": "Logout Successful"
+        ])
     }
 }

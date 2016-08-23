@@ -8,32 +8,34 @@ final class CustomerSession: Model {
     static var entity: String = "customer_session"
     
     var id: Node?
-    var auth_uuid: String
-    var customer_id: String
     
-    init(authUUID: String, customerID: String) {
-        self.auth_uuid = authUUID
-        self.customer_id = customerID
+    var token: String
+    
+    var customerID: Node
+    
+    init(token: String, customerID: Node) {
+        self.token = token
+        self.customerID = customerID
     }
     
     init(node: Node, in context: Context) throws {
         id = try node.extract("id")
-        auth_uuid = try node.extract("auth_uuid")
-        customer_id = try node.extract("customer_id")
+        token = try node.extract("token")
+        customerID = try node.extract("customer_id")
     }
     
     func makeNode() throws -> Node {
         return try Node(node: [
             "id": id,
-            "auth_uuid": auth_uuid,
-            "customer_id": customer_id,
-            ])
+            "token": token,
+            "customer_id": customerID,
+        ])
     }
     
     static func prepare(_ database: Fluent.Database) throws {
         try database.create("customer_session") { customerSession in
             customerSession.id()
-            customerSession.string("auth_uuid")
+            customerSession.string("token")
             customerSession.string("customer_id")
         }
     }
@@ -41,7 +43,6 @@ final class CustomerSession: Model {
     static func revert(_ database: Fluent.Database) throws {
         try database.delete("customer_session")
     }
-    
     
 }
 
@@ -52,6 +53,7 @@ extension CustomerSession {
         response.customerSession = self
         return response
     }
+    
 }
 
 extension Response {
@@ -64,11 +66,5 @@ extension Response {
             storage["customer_session"] = customerSession
         }
     }
-}
-
-extension Sequence where Iterator.Element == CustomerSession {
     
-    func makeJSON() -> JSON {
-        return .array(self.map { $0.makeJSON() })
-    }
 }

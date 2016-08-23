@@ -94,7 +94,7 @@ extension Response {
         get {
             return storage["voucher"] as? Voucher
         }
-        set(purchase) {
+        set(voucher) {
             storage["voucher"] = voucher
         }
     }
