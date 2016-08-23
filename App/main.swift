@@ -11,7 +11,7 @@ let mustache = VaporMustache.Provider(withIncludes: [
     "footer" : "Includes/footer.mustache"
 ])
 
-let preparations: [Preparation.Type] = [Customer.self, Purchase.self, Voucher.self]
+let preparations: [Preparation.Type] = [Customer.self, Purchase.self, Voucher.self, CustomerSession.self]
 let providers: [Vapor.Provider.Type] = [VaporMySQL.Provider.self]
 
 let drop = Droplet(preparations: preparations, providers: providers, initializedProviders: [mustache])
@@ -27,8 +27,12 @@ drop.get("/") { request in
 let customers = CustomerController(droplet: drop)
 drop.resource("customers", customers)
 
-drop.post("customers", Customer.self, "login") { request, customer in
-    return try customers.login(request: request, item: customer)
+drop.post("customers/login") { request in
+    return try customers.login(request: request)
+}
+
+drop.post("customers/logout") { request in
+    return try customers.logout(request: request)
 }
 
 drop.post("customers", Customer.self, "purchases") { request, customer in
