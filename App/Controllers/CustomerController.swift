@@ -1,5 +1,6 @@
 import Vapor
 import HTTP
+import Foundation
 
 final class CustomerController: ResourceRepresentable {
     typealias Item = Customer
@@ -75,8 +76,51 @@ final class CustomerController: ResourceRepresentable {
 
 extension CustomerController {
     
-    func login(request: Request, item: Customer) throws -> ResponseRepresentable {
-        throw Abort.custom(status: Status.notImplemented, message: "Not yet implemented")
+    func login(request: Request) throws -> ResponseRepresentable {
+        guard
+            let username: String = request.data["email"].string,
+            let password: String = request.data["password"]?.string
+        else {
+            throw Abort.custom(status: Status.preconditionFailed, message: "Missing parameter")
+        }
+        
+        guard
+            let customer: Customer = try Customer.query().filter("email", username).first()
+        else {
+            throw Abort.custom(status: Status.notImplemented, message: "No Customer")
+        }
+        
+        print(customer.password)
+        if customer.password == password {
+            
+            let customerID = customer.id?.string
+            let randomUUID = NSUUID().uuidString
+
+            guard
+                let previosSession: CustomerSession = try CustomerSession.query().filter("customer_id", customerID!).first()
+                else {
+                    var customerSession: CustomerSession = CustomerSession(authUUID: randomUUID, customerID: customerID!)
+                    try customerSession.save()
+                    return customerSession.makeJSON()
+            }
+            return previosSession.makeJSON()
+        }
+        
+        throw Abort.custom(status: Status.internalServerError, message: "Server Error!")
     }
     
+    func logout(request: Request) throws -> ResponseRepresentable {
+        guard
+            let authUUID: String = request.data["auth_uuid"].string
+            else {
+                throw Abort.custom(status: Status.preconditionFailed, message: "Missing parameter")
+        }
+        guard
+            let previosSession: CustomerSession = try CustomerSession.query().filter("auth_uuid", authUUID).first()
+            else {
+                throw Abort.custom(status: Status.internalServerError, message: "Server Error!")
+        }
+        try previosSession.delete()
+        throw Abort.custom(status: Status.ok, message: "Logout Succesfuly!")
+    }
 }
