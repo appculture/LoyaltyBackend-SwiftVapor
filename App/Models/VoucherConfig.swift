@@ -3,11 +3,11 @@ import Vapor
 import Fluent
 import HTTP
 
-final class Config: Model {
+final class VoucherConfig: Model {
     
-    static var entity: String = "config"
+    static var entity: String = "voucher_config"
     
-    static var `default`: Config = Config(purchaseAmount: 100.0, voucherValue: 5.0, voucherDuration: 360)
+    static var `default` = VoucherConfig(purchaseAmount: 100.0, voucherValue: 5.0, voucherDuration: 360)
     
     // MARK: - Properties
     
@@ -53,7 +53,7 @@ final class Config: Model {
             config.int("voucher_duration")
         }
         
-        var defaultConfig = Config.`default`
+        var defaultConfig = VoucherConfig.`default`
         try defaultConfig.save()
     }
     
