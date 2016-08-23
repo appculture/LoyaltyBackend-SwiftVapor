@@ -7,6 +7,7 @@ final class CustomerController: ResourceRepresentable {
     typealias Item = Customer
     
     let drop: Droplet
+    
     init(droplet: Droplet) {
         drop = droplet
     }

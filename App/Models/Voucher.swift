@@ -7,6 +7,8 @@ final class Voucher: Model {
     
     static var entity: String = "voucher"
     
+    // MARK: - Properties
+    
     var id: Node?
     
     var timestamp: Int
@@ -15,6 +17,8 @@ final class Voucher: Model {
     var redeemed: Bool
     
     var customerID: Node
+    
+    // MARK: - Init
     
     convenience init(customerID: Node) {
         let now = Date()
@@ -32,6 +36,8 @@ final class Voucher: Model {
         self.redeemed = redeemed
         self.customerID = customerID
     }
+    
+    // MARK: - NodeConvertible
     
     init(node: Node, in context: Context) throws {
         id = try node.extract("id")
@@ -53,6 +59,8 @@ final class Voucher: Model {
         ])
     }
     
+    // MARK: - Preparation
+    
     static func prepare(_ database: Fluent.Database) throws {
         try database.create(entity) { voucher in
             voucher.id()
@@ -70,6 +78,8 @@ final class Voucher: Model {
     
 }
 
+// MARK: - Relations
+
 extension Voucher {
     
     func customer() throws -> Parent<Customer> {
@@ -77,6 +87,8 @@ extension Voucher {
     }
     
 }
+
+// MARK: - Override
 
 extension Voucher {
     

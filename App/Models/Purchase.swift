@@ -7,12 +7,16 @@ final class Purchase: Model {
     
     static var entity: String = "purchase"
     
+    // MARK: - Properties
+    
     var id: Node?
     
     var timestamp: Int
     var amount: Double
     
     var customerID: Node
+    
+    // MARK: - Init
     
     convenience init(amount: Double, customerID: Node) {
         let timestamp = Int(Date().timeIntervalSince1970)
@@ -24,6 +28,8 @@ final class Purchase: Model {
         self.amount = amount
         self.customerID = customerID
     }
+    
+    // MARK: - NodeConvertible
     
     init(node: Node, in context: Context) throws {
         id = try node.extract("id")
@@ -41,6 +47,8 @@ final class Purchase: Model {
         ])
     }
     
+    // MARK: - Preparation
+    
     static func prepare(_ database: Fluent.Database) throws {
         try database.create(entity) { purchase in
             purchase.id()
@@ -56,6 +64,8 @@ final class Purchase: Model {
     
 }
 
+// MARK: - Relations
+
 extension Purchase {
     
     func customer() throws -> Parent<Customer> {
@@ -63,6 +73,8 @@ extension Purchase {
     }
     
 }
+
+// MARK: - Override
 
 extension Purchase {
     

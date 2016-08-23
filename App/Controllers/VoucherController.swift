@@ -6,6 +6,7 @@ final class VoucherController: ResourceRepresentable {
     typealias Item = Voucher
     
     let drop: Droplet
+    
     init(droplet: Droplet) {
         drop = droplet
     }

@@ -7,6 +7,8 @@ final class Customer: Model {
     
     static var entity: String = "customer"
     
+    // MARK: - Properties
+    
     var id: Node?
     
     var first: String
@@ -14,12 +16,16 @@ final class Customer: Model {
     var email: String
     var password: String
     
+    // MARK: - Init
+    
     init(first: String, last: String, email: String, password: String) {
         self.first = first
         self.last = last
         self.email = email
         self.password = password
     }
+    
+    // MARK: - NodeConvertible
     
     init(node: Node, in context: Context) throws {
         id = try node.extract("id")
@@ -39,6 +45,8 @@ final class Customer: Model {
         ])
     }
     
+    // MARK: - Preparation
+    
     static func prepare(_ database: Fluent.Database) throws {
         try database.create(entity) { customer in
             customer.id()
@@ -55,6 +63,8 @@ final class Customer: Model {
     
 }
 
+// MARK: - Relations
+
 extension Customer {
     
     func purchases() throws -> Children<Purchase> {
@@ -66,6 +76,8 @@ extension Customer {
     }
     
 }
+
+// MARK: - Override
 
 extension Customer {
     
