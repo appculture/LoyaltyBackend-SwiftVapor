@@ -1,7 +1,7 @@
-import Foundation
 import Vapor
 import Fluent
 import HTTP
+import Foundation
 
 final class Voucher: Model {
     
@@ -22,10 +22,13 @@ final class Voucher: Model {
     
     convenience init(customerID: Node) {
         let now = Date()
+        let future = now + 360
+        
         let timestamp = Int(now.timeIntervalSince1970)
-        let expiration = Int(now.addingTimeInterval(360).timeIntervalSince1970)
+        let expiration = Int(future.timeIntervalSince1970)
         let value = 5.0
         let redeemed = false
+        
         self.init(timestamp: timestamp, expiration: expiration, value: value, redeemed: redeemed, customerID: customerID)
     }
     

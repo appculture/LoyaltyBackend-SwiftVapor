@@ -95,7 +95,11 @@ extension CustomerController {
         
         if customer.password == password {
             
-            let randomUUID = NSUUID().uuidString
+            #if os(Linux)
+                let randomUUID = NSUUID().UUIDString
+            #else
+                let randomUUID = NSUUID().uuidString
+            #endif
 
             guard
                 let previousSession: CustomerSession = try CustomerSession.query().filter("customer_id", customerID).first()
