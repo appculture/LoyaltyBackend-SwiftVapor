@@ -1,6 +1,5 @@
 import Vapor
 import Fluent
-import MongoKitten
 import HTTP
 
 final class Customer: Model {
