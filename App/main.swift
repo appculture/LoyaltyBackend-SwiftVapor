@@ -24,6 +24,11 @@ drop.post("customers", Customer.self, "login") { request, customer in
     return try customers.login(request: request, item: customer)
 }
 
+drop.post("customers", Customer.self, "purchases") { request, customer in
+    let purchases = try customer.purchases()
+    return try purchases.all().makeResponse()
+}
+
 let customerMiddleware = CustomerMiddleware(droplet: drop)
 drop.middleware.append(customerMiddleware)
 
