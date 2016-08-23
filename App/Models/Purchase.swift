@@ -1,7 +1,7 @@
-import Foundation
 import Vapor
 import Fluent
 import HTTP
+import Foundation
 
 final class Purchase: Model {
     
