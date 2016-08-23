@@ -16,7 +16,7 @@ class CustomerMiddleware: Middleware {
         if let customer = response.customer {
             if request.accept.prefers("html") {
                 return try drop.view("customer.mustache", context: [
-                    "id": customer.id?.string ?? "",
+                    "id": customer.id.string ?? "",
                     "first": customer.first,
                     "last": customer.last,
                     "email": customer.email
@@ -31,7 +31,7 @@ class CustomerMiddleware: Middleware {
                 return try drop.view("customers.mustache", context: [
                     "customers": customers.map { customer in
                         return [
-                            "id": customer.id?.string ?? "",
+                            "id": customer.id.string ?? "",
                             "first": customer.first,
                             "last": customer.last,
                             "email": customer.email
