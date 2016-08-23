@@ -9,43 +9,57 @@ final class Purchase: Model {
     
     var id: Node?
     
+    var customerID: Node
+    
     var timestamp: Int
     var amount: Double
     
-    convenience init(amount: Double) {
+    convenience init(amount: Double, customerID: Node) {
         let timestamp = Int(Date().timeIntervalSince1970)
-        self.init(timestamp: timestamp, amount: amount)
+        self.init(timestamp: timestamp, amount: amount, customerID: customerID)
     }
     
-    init(timestamp: Int, amount: Double) {
+    init(timestamp: Int, amount: Double, customerID: Node) {
         self.timestamp = timestamp
         self.amount = amount
+        self.customerID = customerID
     }
     
     init(node: Node, in context: Context) throws {
         id = try node.extract("id")
         timestamp = try node.extract("timestamp")
         amount = try node.extract("amount")
+        customerID = try node.extract("customer_id")
     }
     
     func makeNode() throws -> Node {
         return try Node(node: [
             "id": id,
             "timestamp": timestamp,
-            "amount": amount
+            "amount": amount,
+            "customer_id": customerID
         ])
     }
     
     static func prepare(_ database: Fluent.Database) throws {
-        try database.create("purchase") { purchase in
+        try database.create(entity) { purchase in
             purchase.id()
             purchase.int("timestamp")
             purchase.double("amount")
+            purchase.int("customer_id")
         }
     }
     
     static func revert(_ database: Fluent.Database) throws {
-        try database.delete("purchase")
+        try database.delete(entity)
+    }
+    
+}
+
+extension Purchase {
+    
+    func customer() throws -> Parent<Customer> {
+        return try parent(customerID)
     }
     
 }

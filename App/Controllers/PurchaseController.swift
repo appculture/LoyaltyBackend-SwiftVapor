@@ -15,12 +15,13 @@ final class PurchaseController: ResourceRepresentable {
     
     func store(request: Request) throws -> ResponseRepresentable {
         guard
+            let customerID = request.data["customer_id"].int,
             let amount = request.data["amount"].double
         else {
             throw Abort.badRequest
         }
         
-        var purchase = Purchase(amount: amount)
+        var purchase = Purchase(amount: amount, customerID: Node(customerID))
         
         try purchase.save()
         

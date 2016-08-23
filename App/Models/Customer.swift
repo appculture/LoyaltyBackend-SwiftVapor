@@ -57,6 +57,14 @@ final class Customer: Model {
 
 extension Customer {
     
+    func purchases() throws -> Children<Purchase> {
+        return children()
+    }
+    
+}
+
+extension Customer {
+    
     func makeResponse() throws -> Response {
         let response = Response()
         response.customer = self
