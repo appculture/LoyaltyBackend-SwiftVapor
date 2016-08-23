@@ -11,7 +11,7 @@ let mustache = VaporMustache.Provider(withIncludes: [
     "footer" : "Includes/footer.mustache"
 ])
 
-let preparations: [Preparation.Type] = [Customer.self, Purchase.self, Voucher.self, CustomerSession.self, Config.self]
+let preparations: [Preparation.Type] = [Customer.self, Purchase.self, Voucher.self, CustomerSession.self, VoucherConfig.self]
 let providers: [Vapor.Provider.Type] = [VaporMySQL.Provider.self]
 
 let drop = Droplet(preparations: preparations, providers: providers, initializedProviders: [mustache])
@@ -59,30 +59,16 @@ drop.middleware.append(purchaseMiddleware)
 let vouchers = VoucherController(droplet: drop)
 drop.resource("vouchers", vouchers)
 
+drop.get("vouchers/config") { request in
+    return try vouchers.getConfig(request: request)
+}
+
+drop.put("vouchers/config") { request in
+    return try vouchers.editConfig(request: request)
+}
+
 let voucherMiddleware = VoucherMiddleware(droplet: drop)
 drop.middleware.append(voucherMiddleware)
-
-// MARK: - Config
-
-let configController = ConfigController(droplet: drop)
-
-drop.get("config") { request in
-    guard let config = try Config.all().first
-    else {
-        throw Abort.serverError
-    }
-    
-    return try configController.show(request: request, item: config)
-}
-
-drop.put("config") { request in
-    guard let config = try Config.all().first
-    else {
-        throw Abort.serverError
-    }
-    
-    return try configController.update(request: request, item: config)
-}
 
 // MARK: - Serve
 

@@ -52,3 +52,47 @@ final class VoucherController: ResourceRepresentable {
     }
     
 }
+
+extension VoucherController {
+    
+    var config: VoucherConfig? {
+        return (try? VoucherConfig.all())?.first
+    }
+    
+    func getConfig(request: Request) throws -> ResponseRepresentable {
+        guard let config = config else { throw Abort.serverError }
+        
+        if request.accept.prefers("html") {
+            return try drop.view("config.mustache", context: [
+                "purchase_amount": config.purchaseAmount,
+                "voucher_value": config.voucherValue,
+                "voucher_duration": config.voucherDuration
+            ]).makeResponse()
+        } else {
+            return config.makeJSON()
+        }
+    }
+    
+    func editConfig(request: Request) throws -> ResponseRepresentable {
+        guard let config = config else { throw Abort.serverError }
+        
+        guard
+            let purchaseAmount = request.data["purchase_amount"].double,
+            let voucherValue = request.data["voucher_value"].double,
+            let voucherDuration = request.data["voucher_duration"].int
+        else {
+            throw Abort.badRequest
+        }
+        
+        var newConfig = config
+        
+        newConfig.purchaseAmount = purchaseAmount
+        newConfig.voucherValue = voucherValue
+        newConfig.voucherDuration = voucherDuration
+        
+        try newConfig.save()
+        
+        return newConfig.makeJSON()
+    }
+    
+}
