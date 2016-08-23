@@ -4,6 +4,7 @@ import HTTP
 class CustomerMiddleware: Middleware {
     
     let drop: Droplet
+    
     init(droplet: Droplet) {
         drop = droplet
     }

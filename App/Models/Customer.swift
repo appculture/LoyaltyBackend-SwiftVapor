@@ -7,6 +7,8 @@ final class Customer: Model {
     
     static var entity: String = "customer"
     
+    // MARK: - Properties
+    
     var id: Node?
     
     var first: String
@@ -14,12 +16,16 @@ final class Customer: Model {
     var email: String
     var password: String
     
+    // MARK: - Init
+    
     init(first: String, last: String, email: String, password: String) {
         self.first = first
         self.last = last
         self.email = email
         self.password = password
     }
+    
+    // MARK: - NodeConvertible
     
     init(node: Node, in context: Context) throws {
         id = try node.extract("id")
@@ -39,21 +45,39 @@ final class Customer: Model {
         ])
     }
     
+    // MARK: - Preparation
+    
     static func prepare(_ database: Fluent.Database) throws {
-        try database.create("customer") { users in
-            users.id()
-            users.string("first")
-            users.string("last")
-            users.string("email")
-            users.string("password")
+        try database.create(entity) { customer in
+            customer.id()
+            customer.string("first")
+            customer.string("last")
+            customer.string("email")
+            customer.string("password")
         }
     }
     
     static func revert(_ database: Fluent.Database) throws {
-        try database.delete("customer")
+        try database.delete(entity)
     }
     
 }
+
+// MARK: - Relations
+
+extension Customer {
+    
+    func purchases() throws -> Children<Purchase> {
+        return children()
+    }
+    
+    func vouchers() throws -> Children<Voucher> {
+        return children()
+    }
+    
+}
+
+// MARK: - Override
 
 extension Customer {
     

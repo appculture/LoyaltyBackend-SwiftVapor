@@ -21,3 +21,12 @@ td, th {
 tr:nth-child(even) {
     background-color: #dddddd;
 }
+
+tr.clickable-row {
+    cursor: pointer;
+}
+
+tr.clickable-row:hover {
+    background: #333 !important;
+    color: #fff;
+}
