@@ -136,3 +136,27 @@ extension CustomerController {
         ])
     }
 }
+
+extension CustomerController {
+
+    func getPurchases(request: Request, customer: Customer) throws -> ResponseRepresentable {
+        let allPurchases = try customer.purchases().all()
+        let total = allPurchases.reduce(0.0) {$0 + $1.amount}
+        
+        return try JSON([
+            "purchases": allPurchases.makeJSON(),
+            "total": total
+        ])
+    }
+    
+    func getVouchers(request: Request, customer: Customer) throws -> ResponseRepresentable {
+        let allVouchers = try customer.vouchers().all()
+        let balance = allVouchers.reduce(0.0) {$0 + $1.value}
+        
+        return try JSON([
+            "vouchers": allVouchers.makeJSON(),
+            "balance": balance
+        ])
+    }
+    
+}
