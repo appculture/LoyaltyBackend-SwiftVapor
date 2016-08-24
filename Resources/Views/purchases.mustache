@@ -1,0 +1,20 @@
+{{>header}}
+<div class="container">
+
+    <table class="table table-striped table-hover">
+        <tr>
+            <th>ID</th>
+            <th>Timestamp</th>
+            <th>Amount</th>
+        </tr>
+        {{# purchases }}
+        <tr class='clickable-row' data-href='purchases/{{ id }}'>
+            <td>{{ id }}</td>
+            <td>{{ timestamp }}</td>
+            <td>{{ amount }}</td>
+        </tr>
+        {{/ purchases }}
+    </table>
+
+</div> <!-- /container -->
+{{>footer}}

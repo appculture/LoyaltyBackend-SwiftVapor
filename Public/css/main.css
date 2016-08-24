@@ -1,49 +1,66 @@
-* {
-    box-sizing: border-box;
-}
-
-body, html {
-    padding: 0;
-    margin: 0;
-    height: 100%;
-}
-
+/* Body */
 body {
-    font-family: sans-serif;
-    color: #333;
+    min-height: 2000px;
+    padding-top: 70px;
+}
+
+/* Table Rows */
+tr.clickable-row {
+    cursor: pointer;
+}
+
+/* Container */
+@media (min-width: 768px) {
+    .container {
+        max-width: 730px;
+    }
+}
+.container-narrow > hr {
+    margin: 30px 0;
+}
+
+/* Jumbotron */
+.jumbotron {
+    text-align: center;
+    border-bottom: 1px solid #e5e5e5;
+}
+.jumbotron .btn {
+    padding: 14px 24px;
+    font-size: 21px;
+}
+
+/* Login */
+.form-signin {
+    max-width: 330px;
+    padding: 15px;
+    margin: 0 auto;
+}
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+    margin-bottom: 10px;
+}
+.form-signin .checkbox {
+    font-weight: normal;
+}
+.form-signin .form-control {
     position: relative;
+    height: auto;
+    -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+    padding: 10px;
+    font-size: 16px;
 }
-
-a {
-    color: #92A8D1;
-    text-decoration: none;
-    border-bottom: 1px dotted;
+.form-signin .form-control:focus {
+    z-index: 2;
 }
-
-a:hover {
-    color: #F7CAC9;
+.form-signin input[type="email"] {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
 }
-
-header.main {
-    text-align: center;
-    color: #333;
+.form-signin input[type="password"] {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
 }
-
-footer.main {
-    position: absolute;
-    width: 100%;
-    text-align: center;
-    bottom: 40px;
-}
-
-footer.main p {
-    margin: 0;
-    padding: 0;
-    color: #ccc;
-    font-weight: 300;
-}
-
-footer.main p a {
-    color: #ccc;
-}
-

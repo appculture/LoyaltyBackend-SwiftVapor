@@ -23,7 +23,7 @@ final class Router {
             guard
                 let previousSession: UserSession = try UserSession.query().filter("user_id", userID).first()
                 else {
-                    return try self.drop.view("index.html")
+                    return try self.drop.view("login.mustache")
             }
             print(previousSession)
             return Response(redirect: "/customers")
