@@ -12,12 +12,27 @@ final class Router {
     func configureRoutes() {
         
         drop.get("/") { request in
-            return "Hello, Royalty!"
+            print(request.cookies.array)
+            var userID: String = ""
+            let cookieArray: Array = request.cookies.array
+            for cookie: Cookie in cookieArray {
+                if cookie.name == "user" {
+                    userID = cookie.value
+                }
+            }
+            guard
+                let previousSession: UserSession = try UserSession.query().filter("user_id", userID).first()
+                else {
+                    return try self.drop.view("index.html")
+            }
+            print(previousSession)
+            return Response(redirect: "/customers")
         }
         
         configureCustomersRoutes()
         configurePurchasesRoutes()
         configureVouchersRoutes()
+        configureUserRoutes()
     }
     
 }
@@ -39,11 +54,11 @@ extension Router {
         }
         
         drop.post("customers", Customer.self, "purchases") { request, customer in
-            return try customer.purchases().all().makeResponse()
+            return try customers.getPurchases(request: request, customer: customer)
         }
         
         drop.post("customers", Customer.self, "vouchers") { request, customer in
-            return try customer.vouchers().all().makeResponse()
+            return try customers.getVouchers(request: request, customer: customer)
         }
         
         let customerMiddleware = CustomerMiddleware(droplet: drop)
@@ -84,6 +99,20 @@ extension Router {
         
         let voucherMiddleware = VoucherMiddleware(droplet: drop)
         drop.middleware.append(voucherMiddleware)
+    }
+    
+}
+
+// MARK: - Users - Admin
+
+extension Router {
+    func configureUserRoutes() {
+        let user = UserLoginController(droplet: drop)
+        drop.resource("user", user)
+        
+        drop.post("login") { request in
+            return try user.login(request: request)
+        }
     }
     
 }

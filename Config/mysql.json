@@ -1,7 +1,7 @@
 {
-    "host": "d6q8diwwdmy5c9k9.cbetxkdyhwsb.us-east-1.rds.amazonaws.com",
-    "user": "fmbwmuqoxwh3toxu",
-    "password": "grjrh1hyn04lmai4",
-    "database": "n9xri7g61y2ww3q7",
+    "host": "localhost",
+    "user": "root",
+    "password": "",
+    "database": "royalty",
     "port": 3306
 }
