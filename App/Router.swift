@@ -54,11 +54,11 @@ extension Router {
         }
         
         drop.post("customers", Customer.self, "purchases") { request, customer in
-            return try customer.purchases().all().makeResponse()
+            return try customers.getPurchases(request: request, customer: customer)
         }
         
         drop.post("customers", Customer.self, "vouchers") { request, customer in
-            return try customer.vouchers().all().makeResponse()
+            return try customers.getVouchers(request: request, customer: customer)
         }
         
         let customerMiddleware = CustomerMiddleware(droplet: drop)
