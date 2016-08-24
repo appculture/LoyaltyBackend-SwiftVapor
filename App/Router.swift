@@ -39,11 +39,23 @@ extension Router {
         }
         
         drop.post("customers", Customer.self, "purchases") { request, customer in
-            return try customer.purchases().all().makeResponse()
+            let purchases = try customer.purchases().all()
+            let total = purchases.reduce(0.0) {$0 + $1.amount}
+            
+            return try JSON([
+                "purchases": purchases.makeJSON(),
+                "total": total
+            ])
         }
         
         drop.post("customers", Customer.self, "vouchers") { request, customer in
-            return try customer.vouchers().all().makeResponse()
+            let vouchers = try customer.vouchers().all()
+            let balance = vouchers.reduce(0.0) {$0 + $1.value}
+            
+            return try JSON([
+                "vouchers": vouchers.makeJSON(),
+                "balance": balance
+            ])
         }
         
         let customerMiddleware = CustomerMiddleware(droplet: drop)
