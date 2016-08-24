@@ -1,0 +1,24 @@
+{{>header}}
+<div class="container">
+
+    <table class="table table-striped table-hover">
+        <tr>
+            <th>ID</th>
+            <th>Timestamp</th>
+            <th>Expiration</th>
+            <th>Value</th>
+            <th>Redeemed</th>
+        </tr>
+        {{# vouchers }}
+        <tr class='clickable-row' data-href='vouchers/{{ id }}'>
+            <td>{{ id }}</td>
+            <td>{{ timestamp }}</td>
+            <td>{{ expiration }}</td>
+            <td>{{ value }}</td>
+            <td>{{ redeemed }}</td>
+        </tr>
+        {{/ vouchers }}
+    </table>
+
+</div> <!-- /container -->
+{{>footer}}
