@@ -14,9 +14,18 @@ final class Voucher: Model {
     var timestamp: Int
     var expiration: Int
     var value: Double
-    var redeemed: Bool
+    
+    var redeemed: Int
     
     var customerID: Node
+    
+    var redeemedBool: Bool {
+        return redeemed > 0 ? true : false
+    }
+    var expiredBool: Bool {
+        let now = Int(Date().timeIntervalSince1970)
+        return now > expiration
+    }
     
     // MARK: - Init
     
@@ -27,12 +36,13 @@ final class Voucher: Model {
         let timestamp = Int(now.timeIntervalSince1970)
         let expiration = Int(future.timeIntervalSince1970)
         let value = 5.0
-        let redeemed = false
+        
+        let redeemed = 0
         
         self.init(timestamp: timestamp, expiration: expiration, value: value, redeemed: redeemed, customerID: customerID)
     }
     
-    init(timestamp: Int, expiration: Int, value: Double, redeemed: Bool, customerID: Node) {
+    init(timestamp: Int, expiration: Int, value: Double, redeemed: Int, customerID: Node) {
         self.timestamp = timestamp
         self.expiration = expiration
         self.value = value
@@ -70,7 +80,7 @@ final class Voucher: Model {
             voucher.int("timestamp")
             voucher.int("expiration")
             voucher.double("value")
-            voucher.bool("redeemed")
+            voucher.int("redeemed")
             voucher.int("customer_id")
         }
     }
@@ -94,6 +104,18 @@ extension Voucher {
 // MARK: - Override
 
 extension Voucher {
+    
+    public func makeJSON() -> JSON {
+        return try! JSON([
+            "id": id.int ?? -1,
+            "timestamp": timestamp,
+            "expiration": expiration,
+            "value": value,
+            "redeemed": redeemedBool,
+            "expired": expiredBool,
+            "customer_id": customerID.int ?? -1
+        ] as [String : JSONRepresentable])
+    }
     
     func makeResponse() throws -> Response {
         let response = Response()
