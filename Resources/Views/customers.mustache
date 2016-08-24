@@ -1,20 +1,23 @@
 {{>header}}
-<div id="customers-wrapper">
-<table>
-    <tr>
-        <th>ID</th>
-        <th>First</th>
-        <th>Last</th>
-        <th>Email</th>
-    </tr>
-    {{# customers }}
-    <tr class='clickable-row' data-href='customers/{{ id }}'>
-        <td>{{ id }}</td>
-        <td>{{ first }}</td>
-        <td>{{ last }}</td>
-        <td>{{ email }}</td>
-    </tr>
-    {{/ customers }}
-</table>
-</div>
+<!-- <div id="customers-wrapper"> -->
+<div class="container">
+
+    <table class="table table-striped table-hover">
+        <tr>
+            <th>ID</th>
+            <th>First</th>
+            <th>Last</th>
+            <th>Email</th>
+        </tr>
+        {{# customers }}
+        <tr class='clickable-row' data-href='customers/{{ id }}'>
+            <td>{{ id }}</td>
+            <td>{{ first }}</td>
+            <td>{{ last }}</td>
+            <td>{{ email }}</td>
+        </tr>
+        {{/ customers }}
+    </table>
+
+</div> <!-- /container -->
 {{>footer}}
