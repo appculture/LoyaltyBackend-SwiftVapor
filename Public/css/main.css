@@ -3,53 +3,6 @@ body {
     padding-top: 70px;
 }
 
-/*
-* {
-    box-sizing: border-box;
+tr.clickable-row {
+    cursor: pointer;
 }
-
-body, html {
-    padding: 0;
-    margin: 0;
-    height: 100%;
-}
-
-body {
-    font-family: sans-serif;
-    color: #333;
-    position: relative;
-}
-
-a {
-    color: #92A8D1;
-    text-decoration: none;
-    border-bottom: 1px dotted;
-}
-
-a:hover {
-    color: #F7CAC9;
-}
-
-header.main {
-    text-align: center;
-    color: #333;
-}
-
-footer.main {
-    position: absolute;
-    width: 100%;
-    text-align: center;
-    bottom: 40px;
-}
-
-footer.main p {
-    margin: 0;
-    padding: 0;
-    color: #ccc;
-    font-weight: 300;
-}
-
-footer.main p a {
-    color: #ccc;
-}
-*/
