@@ -4,7 +4,14 @@
 	<!-- Customer Info -->
     <div class="jumbotron">
         <h2>{{ first }} {{ last }}</h2>
-        <p class="lead">{{ email }}</p>
+        <p>Email: {{ email }}</p>
+
+		<div class="alert alert-info" role="alert">
+		    <p class="lead">Cash spent: <strong>{{ cash_spent }}</strong></p>
+		    <p class="lead">Vouchers redeemed: <strong>{{ vouchers_redeemed }}</strong></p>
+		    <p class="lead">Loyalty balance: <strong>{{ loyalty_balance }}</strong></p>
+		</div>
+
         <p><a class="btn btn-lg btn-success" data-toggle="modal" data-target="#purchaseModal">Make Purchase</a></p>
     </div>
 

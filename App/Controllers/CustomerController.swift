@@ -152,7 +152,8 @@ extension CustomerController {
     
     func getVouchers(request: Request, customer: Customer) throws -> ResponseRepresentable {
         let allVouchers = try customer.vouchers().all()
-        let balance = allVouchers.reduce(0.0) {$0 + $1.value}
+        let validVouchers = allVouchers.filter { $0.valid }
+        let balance = validVouchers.reduce(0.0) {$0 + $1.value}
         
         return try JSON([
             "vouchers": allVouchers.makeJSON(),

@@ -16,7 +16,16 @@ class CustomerMiddleware: Middleware {
         if let customer = response.customer {
             if request.accept.prefers("html") {
                 
-                let purchases = try customer.purchases().all().map { purchase -> [String : Any] in
+                let allPurchases = try customer.purchases().all()
+                let allVouchers = try customer.vouchers().all()
+                let redeemedVouchers = allVouchers.filter { $0.redeemedBool }
+                let validVouchers = allVouchers.filter { $0.valid }
+                
+                let totalCashPurchaseAmount = allPurchases.reduce(0.0) { $0 + $1.cashAmount }
+                let redeemedVouchersValue = redeemedVouchers.reduce(0.0) { $0 + $1.value }
+                let validVouchersValue = validVouchers.reduce(0.0) { $0 + $1.value }
+                
+                let purchases = allPurchases.map { purchase -> [String : Any] in
                     return [
                         "purchase_id": purchase.id?.string ?? "",
                         "timestamp": purchase.timestamp.dateValue.readable,
@@ -25,9 +34,6 @@ class CustomerMiddleware: Middleware {
                         "total": purchase.cashAmount + purchase.loyaltyAmount
                     ]
                 }
-                
-                let allVouchers = try customer.vouchers().all()
-                let validVouchers = allVouchers.filter { $0.valid }
                 
                 let allVouchersDictionary = allVouchers.map { voucher -> [String : Any] in
                     return [
@@ -58,7 +64,10 @@ class CustomerMiddleware: Middleware {
                     "email": customer.email,
                     "purchases": purchases,
                     "all_vouchers": allVouchersDictionary,
-                    "valid_vouchers": validVouchersDictionary
+                    "valid_vouchers": validVouchersDictionary,
+                    "cash_spent" : totalCashPurchaseAmount,
+                    "vouchers_redeemed": redeemedVouchersValue,
+                    "loyalty_balance": validVouchersValue
                 ]).makeResponse()
                 
             } else {
