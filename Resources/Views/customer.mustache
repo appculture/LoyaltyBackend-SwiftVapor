@@ -34,6 +34,7 @@
             <th>Expiration</th>
             <th>Value</th>
             <th>Redeemed</th>
+            <th>Expired</th>
         </tr>
         {{# vouchers }}
         <tr class='clickable-row' data-href='../vouchers/{{ id }}'>
@@ -42,6 +43,7 @@
             <td>{{ expiration }}</td>
             <td>{{ value }}</td>
             <td>{{ redeemed }}</td>
+            <td>{{ expired }}</td>
         </tr>
         {{/ vouchers }}
     </table>

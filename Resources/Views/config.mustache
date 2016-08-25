@@ -14,5 +14,48 @@
         </tr>
     </table>
 
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#configModal">
+        Edit Config
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="configModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Edit Config</h4>
+        </div>
+
+        <div class="modal-body">
+            <form id="configForm" action="/vouchers/config" method="post">
+                <div class="form-group">
+                    <label for="purchaseAmount">Purchase Amount</label>
+                    <input type="number" class="form-control numberField" id="purchaseAmount" name="purchase_amount" 
+                    placeholder="{{ purchase_amount }}" value="{{ purchase_amount }}">
+                </div>
+                <div class="form-group">
+                    <label for="voucherValue">Voucher Value</label>
+                    <input type="number" class="form-control numberField" id="voucherValue" name="voucher_value" 
+                    placeholder="{{ voucher_value }}" value="{{ voucher_value }}">
+                </div>
+                <div class="form-group">
+                    <label for="voucherDuration">Voucher Duration</label>
+                    <input type="number" class="form-control numberField" id="voucherDuration" name="voucher_duration" 
+                    placeholder="{{ voucher_duration }}" value="{{ voucher_duration }}">
+                    <p class="help-block">Duration in seconds.</p>
+                </div>
+            </form>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" onclick="document.getElementById('configForm').submit();">Save changes</button>
+        </div>
+    </div>
+    </div>
+    </div>
+
 </div> <!-- /container -->
 {{>footer}}

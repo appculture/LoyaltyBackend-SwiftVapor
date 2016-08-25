@@ -93,7 +93,7 @@ extension Router {
             return try vouchers.getConfig(request: request)
         }
         
-        drop.put("vouchers/config") { request in
+        drop.post("vouchers/config") { request in
             return try vouchers.editConfig(request: request)
         }
         

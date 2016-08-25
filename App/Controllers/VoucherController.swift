@@ -92,7 +92,11 @@ extension VoucherController {
         
         try newConfig.save()
         
-        return newConfig.makeJSON()
+        if request.accept.prefers("html") {
+            return Response(redirect: "/vouchers/config")
+        } else {
+            return newConfig.makeJSON()
+        }
     }
     
 }
