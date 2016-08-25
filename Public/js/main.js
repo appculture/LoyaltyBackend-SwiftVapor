@@ -8,12 +8,12 @@ jQuery(document).ready(function($) {
         window.document.location = $(this).data("href");
     });
 
-    // make table rows selectable           
-    $(".selectable-row").click(function() {
-    	var checkbox = $(this).find('input[type=checkbox]');
-        var checked = checkbox.prop('checked');
-        checkbox.prop('checked', !checked);
-    });
+    // make table rows selectable
+    $('.selectable-row').click(function(event) {
+    	if (event.target.type !== 'checkbox') {
+      		$(':checkbox', this).trigger('click');
+    	}
+	});
 
     // client side validation to allow only numbers in textfield
     $(".numberField").keydown(function (e) {
