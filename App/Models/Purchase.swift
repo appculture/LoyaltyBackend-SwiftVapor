@@ -121,3 +121,18 @@ extension Sequence where Iterator.Element == Purchase {
     }
     
 }
+
+extension Purchase {
+    
+    var timestampDate: Date {
+        return Date(timeIntervalSince1970: Double(timestamp))
+    }
+    
+    var readableTimestamp: String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+        return formatter.string(from: timestampDate)
+    }
+    
+}

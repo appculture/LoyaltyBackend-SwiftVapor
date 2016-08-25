@@ -17,10 +17,10 @@ class VoucherMiddleware: Middleware {
             if request.accept.prefers("html") {
                 return try drop.view("voucher.mustache", context: [
                     "id": voucher.id?.string ?? "",
-                    "timestamp": voucher.timestamp,
-                    "expiration": voucher.expiration,
+                    "timestamp": voucher.readableTimestamp,
+                    "expiration": voucher.readableExpiration,
                     "value": voucher.value,
-                    "redeemed": voucher.redeemed
+                    "redeemed": voucher.redeemed > 0 ? "YES" : "NO"
                 ]).makeResponse()
             } else {
                 response.json = voucher.makeJSON()
@@ -33,10 +33,10 @@ class VoucherMiddleware: Middleware {
                     "vouchers": vouchers.map { voucher -> [String : Any] in
                         return [
                             "id": voucher.id?.string ?? "",
-                            "timestamp": voucher.timestamp,
-                            "expiration": voucher.expiration,
+                            "timestamp": voucher.readableTimestamp,
+                            "expiration": voucher.readableExpiration,
                             "value": voucher.value,
-                            "redeemed": voucher.redeemed
+                            "redeemed": voucher.redeemed > 0 ? "YES" : "NO"
                         ]
                     }
                 ]).makeResponse()

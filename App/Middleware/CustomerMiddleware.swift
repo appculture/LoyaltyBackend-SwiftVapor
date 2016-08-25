@@ -19,7 +19,7 @@ class CustomerMiddleware: Middleware {
                 let purchases = try customer.purchases().all().map { purchase -> [String : Any] in
                     return [
                         "id": purchase.id?.string ?? "",
-                        "timestamp": purchase.timestamp,
+                        "timestamp": purchase.readableTimestamp,
                         "amount": purchase.amount
                     ]
                 }
@@ -27,10 +27,10 @@ class CustomerMiddleware: Middleware {
                 let vouchers = try customer.vouchers().all().map { voucher -> [String : Any] in
                     return [
                         "id": voucher.id?.string ?? "",
-                        "timestamp": voucher.timestamp,
-                        "expiration": voucher.expiration,
+                        "timestamp": voucher.readableTimestamp,
+                        "expiration": voucher.readableExpiration,
                         "value": voucher.value,
-                        "redeemed": voucher.redeemed
+                        "redeemed": voucher.redeemed > 0 ? "YES" : "NO"
                     ]
                 }
                 
