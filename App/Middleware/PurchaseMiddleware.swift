@@ -16,8 +16,8 @@ class PurchaseMiddleware: Middleware {
         if let purchase = response.purchase {
             if request.accept.prefers("html") {
                 return try drop.view("purchase.mustache", context: [
-                    "id": purchase.id.string ?? "",
-                    "timestamp": purchase.timestamp,
+                    "id": purchase.id?.string ?? "",
+                    "timestamp": purchase.timestamp.dateValue.readable,
                     "amount": purchase.amount
                 ]).makeResponse()
             } else {
@@ -30,8 +30,8 @@ class PurchaseMiddleware: Middleware {
                 return try drop.view("purchases.mustache", context: [
                     "purchases": purchases.map { purchase -> [String : Any] in
                         return [
-                            "id": purchase.id.string ?? "",
-                            "timestamp": purchase.timestamp,
+                            "id": purchase.id?.string ?? "",
+                            "timestamp": purchase.timestamp.dateValue.readable,
                             "amount": purchase.amount
                         ]
                     }

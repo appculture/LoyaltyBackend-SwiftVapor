@@ -160,29 +160,3 @@ extension Sequence where Iterator.Element == Voucher {
     }
     
 }
-
-extension Voucher {
-    
-    var timestampDate: Date {
-        return Date(timeIntervalSince1970: Double(timestamp))
-    }
-    
-    var readableTimestamp: String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .short
-        return formatter.string(from: timestampDate)
-    }
-    
-    var expirationDate: Date {
-        return Date(timeIntervalSince1970: Double(timestamp))
-    }
-    
-    var readableExpiration: String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .short
-        return formatter.string(from: expirationDate)
-    }
-    
-}

@@ -16,9 +16,9 @@ class VoucherMiddleware: Middleware {
         if let voucher = response.voucher {
             if request.accept.prefers("html") {
                 return try drop.view("voucher.mustache", context: [
-                    "id": voucher.id.string ?? "",
-                    "timestamp": voucher.timestamp,
-                    "expiration": voucher.expiration,
+                    "id": voucher.id?.string ?? "",
+                    "timestamp": voucher.timestamp.dateValue.readable,
+                    "expiration": voucher.expiration.dateValue.readable,
                     "value": voucher.value,
                     "redeemed": voucher.redeemed
                 ]).makeResponse()
@@ -32,9 +32,9 @@ class VoucherMiddleware: Middleware {
                 return try drop.view("vouchers.mustache", context: [
                     "vouchers": vouchers.map { voucher -> [String : Any] in
                         return [
-                            "id": voucher.id.string ?? "",
-                            "timestamp": voucher.timestamp,
-                            "expiration": voucher.expiration,
+                            "id": voucher.id?.string ?? "",
+                            "timestamp": voucher.timestamp.dateValue.readable,
+                            "expiration": voucher.expiration.dateValue.readable,
                             "value": voucher.value,
                             "redeemed": voucher.redeemed
                         ]
