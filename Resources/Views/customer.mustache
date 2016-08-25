@@ -40,7 +40,7 @@
             <th>Redeemed</th>
             <th>Expired</th>
         </tr>
-        {{# vouchers }}
+        {{# all_vouchers }}
         <tr class='clickable-row' data-href='../vouchers/{{ customer_id }}'>
             <td>{{ voucher_id }}</td>
             <td>{{ timestamp }}</td>
@@ -49,7 +49,7 @@
             <td>{{ redeemed }}</td>
             <td>{{ expired }}</td>
         </tr>
-        {{/ vouchers }}
+        {{/ all_vouchers }}
     </table>
 
     <!-- Modal -->
@@ -87,14 +87,14 @@
 			            <th>Expiration</th>
 			            <th>Value</th>
 			        </tr>
-			        {{# vouchers }}
+			        {{# valid_vouchers }}
 			        <tr class='selectable-row'>
 			        	<td><input type="checkbox" name="voucher_ids[]" value="{{ voucher_id }}"></td>
 			            <td>{{ voucher_id }}</td>
 			            <td>{{ expiration }}</td>
 			            <td>{{ value }}</td>
 			        </tr>
-			        {{/ vouchers }}
+			        {{/ valid_vouchers }}
 			    </table>
 
             </form>

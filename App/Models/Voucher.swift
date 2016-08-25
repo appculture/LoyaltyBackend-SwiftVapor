@@ -26,6 +26,9 @@ final class Voucher: Model {
         let now = Int(Date().timeIntervalSince1970)
         return now > expiration
     }
+    var valid: Bool {
+        return !redeemedBool && !expiredBool
+    }
     
     // MARK: - Init
     

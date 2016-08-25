@@ -26,7 +26,21 @@ class CustomerMiddleware: Middleware {
                     ]
                 }
                 
-                let vouchers = try customer.vouchers().all().map { voucher -> [String : Any] in
+                let allVouchers = try customer.vouchers().all()
+                let validVouchers = allVouchers.filter { $0.valid }
+                
+                let allVouchersDictionary = allVouchers.map { voucher -> [String : Any] in
+                    return [
+                        "voucher_id": voucher.id?.string ?? "",
+                        "timestamp": voucher.timestamp.dateValue.readable,
+                        "expiration": voucher.expiration.dateValue.readable,
+                        "value": voucher.value,
+                        "redeemed": voucher.redeemedBool.readable,
+                        "expired": voucher.expiredBool.readable
+                    ]
+                }
+                
+                let validVouchersDictionary = validVouchers.map { voucher -> [String : Any] in
                     return [
                         "voucher_id": voucher.id?.string ?? "",
                         "timestamp": voucher.timestamp.dateValue.readable,
@@ -43,7 +57,8 @@ class CustomerMiddleware: Middleware {
                     "last": customer.last,
                     "email": customer.email,
                     "purchases": purchases,
-                    "vouchers": vouchers
+                    "all_vouchers": allVouchersDictionary,
+                    "valid_vouchers": validVouchersDictionary
                 ]).makeResponse()
                 
             } else {
