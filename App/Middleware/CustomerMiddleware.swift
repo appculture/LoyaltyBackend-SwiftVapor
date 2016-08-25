@@ -15,12 +15,23 @@ class CustomerMiddleware: Middleware {
         
         if let customer = response.customer {
             if request.accept.prefers("html") {
+                
+                let purchases = try customer.purchases().all().map { purchase -> [String : Any] in
+                    return [
+                        "id": purchase.id?.string ?? "",
+                        "timestamp": purchase.timestamp,
+                        "amount": purchase.amount
+                    ]
+                }
+                
                 return try drop.view("customer.mustache", context: [
                     "id": customer.id?.string ?? "",
                     "first": customer.first,
                     "last": customer.last,
-                    "email": customer.email
+                    "email": customer.email,
+                    "purchases": purchases
                 ]).makeResponse()
+                
             } else {
                 response.json = customer.makeJSON()
             }
