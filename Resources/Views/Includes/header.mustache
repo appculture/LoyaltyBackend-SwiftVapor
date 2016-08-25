@@ -37,8 +37,15 @@
 	          </ul>
 	          <ul class="nav navbar-nav navbar-right">
 	            <li><a href="/vouchers/config">Config</a></li>
-	            <li><a href="/logout">Logout</a></li>
+	            <!-- <li><a href="/logout">Logout</a></li> -->
+	            <li>
+                    <a href="#" onclick="document.getElementById('logoutForm').submit();">Logout</a>
+	            </li>
 	          </ul>
 	        </div><!--/.nav-collapse -->
 	      </div>
 	    </nav>
+
+        <form id="logoutForm" action="/logout" method="post">
+            <input type="hidden" name="name" value="value" /> 
+        </form>

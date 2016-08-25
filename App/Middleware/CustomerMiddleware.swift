@@ -15,12 +15,34 @@ class CustomerMiddleware: Middleware {
         
         if let customer = response.customer {
             if request.accept.prefers("html") {
+                
+                let purchases = try customer.purchases().all().map { purchase -> [String : Any] in
+                    return [
+                        "id": purchase.id?.string ?? "",
+                        "timestamp": purchase.readableTimestamp,
+                        "amount": purchase.amount
+                    ]
+                }
+                
+                let vouchers = try customer.vouchers().all().map { voucher -> [String : Any] in
+                    return [
+                        "id": voucher.id?.string ?? "",
+                        "timestamp": voucher.readableTimestamp,
+                        "expiration": voucher.readableExpiration,
+                        "value": voucher.value,
+                        "redeemed": voucher.redeemed > 0 ? "YES" : "NO"
+                    ]
+                }
+                
                 return try drop.view("customer.mustache", context: [
                     "id": customer.id.string ?? "",
                     "first": customer.first,
                     "last": customer.last,
-                    "email": customer.email
+                    "email": customer.email,
+                    "purchases": purchases,
+                    "vouchers": vouchers
                 ]).makeResponse()
+                
             } else {
                 response.json = customer.makeJSON()
             }

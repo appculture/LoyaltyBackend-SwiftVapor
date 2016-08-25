@@ -1,11 +1,50 @@
 {{>header}}
 <div class="container">
 
+	<!-- Customer Info -->
     <div class="jumbotron">
-        <h1>{{ first }} {{ last }}</h1>
+        <h2>{{ first }} {{ last }}</h2>
         <p class="lead">{{ email }}</p>
         <p><a class="btn btn-lg btn-success" href="#" role="button">Make Purchase</a></p>
     </div>
+
+	<!-- Customer Purchases -->
+	<h3>Purchases</h3>
+    <table class="table table-striped table-hover">
+        <tr>
+            <th>ID</th>
+            <th>Timestamp</th>
+            <th>Amount</th>
+        </tr>
+        {{# purchases }}
+        <tr class='clickable-row' data-href='../purchases/{{ id }}'>
+            <td>{{ id }}</td>
+            <td>{{ timestamp }}</td>
+            <td>{{ amount }}</td>
+        </tr>
+        {{/ purchases }}
+    </table>
+
+    <!-- Customer Vouchers -->
+    <h3>Vouchers</h3>
+    <table class="table table-striped table-hover">
+        <tr>
+            <th>ID</th>
+            <th>Timestamp</th>
+            <th>Expiration</th>
+            <th>Value</th>
+            <th>Redeemed</th>
+        </tr>
+        {{# vouchers }}
+        <tr class='clickable-row' data-href='../vouchers/{{ id }}'>
+            <td>{{ id }}</td>
+            <td>{{ timestamp }}</td>
+            <td>{{ expiration }}</td>
+            <td>{{ value }}</td>
+            <td>{{ redeemed }}</td>
+        </tr>
+        {{/ vouchers }}
+    </table>
 
 </div> <!-- /container -->
 {{>footer}}
