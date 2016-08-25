@@ -37,3 +37,17 @@ jQuery(document).ready(function($) {
     });
                        
 });
+
+function makePurchase() {
+	var amount = document.getElementById('purchaseAmount').value;
+
+	if (amount > 0) {
+		$("#purchaseErrorAlert").hide();
+		$("#purchaseSuccessAlert").show("slow", function() {
+    		document.getElementById('purchaseForm').submit();
+  		});
+	} else {
+		$("#purchaseSuccessAlert").hide();
+		$("#purchaseErrorAlert").show("fast");
+	}
+}

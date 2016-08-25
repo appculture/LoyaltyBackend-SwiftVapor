@@ -57,6 +57,14 @@
             <h4 class="modal-title" id="myModalLabel">Make purchase for {{ first }} {{ last }}</h4>
         </div>
 
+        <div id="purchaseSuccessAlert" class="alert alert-success" role="alert">
+  			<strong>Well done!</strong> Please wait a bit...
+		</div>
+
+        <div id="purchaseErrorAlert" class="alert alert-danger" role="alert">
+  			<strong>Oh snap!</strong> Purchase amount has to be more then just 0.00...
+		</div>
+
         <div class="modal-body">
             <form id="purchaseForm" action="/purchases" method="post">
             	<input type="hidden" name="customer_id" value="{{ customer_id }}">
@@ -90,7 +98,7 @@
 
         <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary btn-success" onclick="document.getElementById('purchaseForm').submit();">
+            <button type="button" class="btn btn-primary btn-success" onclick="makePurchase();">
             	Make Purchase
             </button>
         </div>
