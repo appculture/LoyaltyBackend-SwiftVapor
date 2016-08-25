@@ -18,7 +18,7 @@ class CustomerMiddleware: Middleware {
                 
                 let purchases = try customer.purchases().all().map { purchase -> [String : Any] in
                     return [
-                        "id": purchase.id?.string ?? "",
+                        "purchase_id": purchase.id?.string ?? "",
                         "timestamp": purchase.timestamp.dateValue.readable,
                         "amount": purchase.amount
                     ]
@@ -26,7 +26,7 @@ class CustomerMiddleware: Middleware {
                 
                 let vouchers = try customer.vouchers().all().map { voucher -> [String : Any] in
                     return [
-                        "id": voucher.id?.string ?? "",
+                        "voucher_id": voucher.id?.string ?? "",
                         "timestamp": voucher.timestamp.dateValue.readable,
                         "expiration": voucher.expiration.dateValue.readable,
                         "value": voucher.value,
@@ -36,7 +36,7 @@ class CustomerMiddleware: Middleware {
                 }
                 
                 return try drop.view("customer.mustache", context: [
-                    "id": customer.id.string ?? "",
+                    "customer_id": customer.id.string ?? "",
                     "first": customer.first,
                     "last": customer.last,
                     "email": customer.email,

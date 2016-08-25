@@ -5,7 +5,7 @@ body {
 }
 
 /* Table Rows */
-tr.clickable-row {
+tr.clickable-row, tr.selectable-row {
     cursor: pointer;
 }
 
