@@ -14,13 +14,17 @@
         <tr>
             <th>ID</th>
             <th>Timestamp</th>
-            <th>Amount</th>
+            <th>Cash</th>
+            <th>Loyalty</th>
+            <th>Total</th>
         </tr>
         {{# purchases }}
-        <tr class='clickable-row' data-href='../purchases/{{ id }}'>
+        <tr class='clickable-row' data-href='../purchases/{{ customer_id }}'>
             <td>{{ purchase_id }}</td>
             <td>{{ timestamp }}</td>
-            <td>{{ amount }}</td>
+            <td>{{ cash }}</td>
+            <td>{{ loyalty }}</td>
+            <td>{{ total }}</td>
         </tr>
         {{/ purchases }}
     </table>
@@ -37,7 +41,7 @@
             <th>Expired</th>
         </tr>
         {{# vouchers }}
-        <tr class='clickable-row' data-href='../vouchers/{{ id }}'>
+        <tr class='clickable-row' data-href='../vouchers/{{ customer_id }}'>
             <td>{{ voucher_id }}</td>
             <td>{{ timestamp }}</td>
             <td>{{ expiration }}</td>

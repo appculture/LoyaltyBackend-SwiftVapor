@@ -18,8 +18,9 @@ class PurchaseMiddleware: Middleware {
                 return try drop.view("purchase.mustache", context: [
                     "id": purchase.id?.string ?? "",
                     "timestamp": purchase.timestamp.dateValue.readable,
-                    "cash_amount": purchase.cashAmount,
-                    "loyalty_amount": purchase.loyaltyAmount
+                    "cash": purchase.cashAmount,
+                    "loyalty": purchase.loyaltyAmount,
+                    "total": purchase.cashAmount + purchase.loyaltyAmount
                 ]).makeResponse()
             } else {
                 response.json = purchase.makeJSON()
@@ -33,8 +34,9 @@ class PurchaseMiddleware: Middleware {
                         return [
                             "id": purchase.id?.string ?? "",
                             "timestamp": purchase.timestamp.dateValue.readable,
-                            "cash_amount": purchase.cashAmount,
-                            "loyalty_amount": purchase.loyaltyAmount
+                            "cash": purchase.cashAmount,
+                            "loyalty": purchase.loyaltyAmount,
+                            "total": purchase.cashAmount + purchase.loyaltyAmount
                         ]
                     }
                 ]).makeResponse()
