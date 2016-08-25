@@ -7,7 +7,7 @@ API for Royalty Loyalty System.
 
 ## Customers [/customers]
 
-### Register [POST /customers/register.json]
+### Register [POST /customers]
 
 + Request (application/json)
 
@@ -17,7 +17,7 @@ API for Royalty Loyalty System.
                 "first": "John",
                 "last": "Doe",
                 "email": "john.doe@test.com",
-                "password": "hashed-password"
+                "password": "hello123"
             }
         
 + Response 201 (application/json)
@@ -25,149 +25,201 @@ API for Royalty Loyalty System.
     + Body
 
             {
-                "customer_id": "57b430aafd36a68dc81c9884",
-                "auth_token": "6AFAB32C-A71C-4527-98A1-A263A5B15F8C"
-            }
-
-### Login [POST /customers/login.json]
-        
-+ Request
-
-    + Headers
-    
-            email: john.doe@test.com
-            password: hashed-password
-        
-+ Response 200 (application/json)
-
-    + Body
-
-            {
-                "auth_token": "6AFAB32C-A71C-4527-98A1-A263A5B15F8C"
-            }
-            
-### Show [GET /customers/show.json?id={id}]
-
-+ Parameters
-
-    + id (String) - Customer ID
-
-+ Request
-
-    + Headers
-    
-            auth_token: 6AFAB32C-A71C-4527-98A1-A263A5B15F8C
-            
-+ Response 200 (application/json)
-
-    + Body
-
-            {
+                "id": "57b430aafd36a68dc81c9884",
                 "first": "John",
                 "last": "Doe",
                 "email": "john.doe@test.com",
-                "amount_spent": 150.00,
-                "loyalty_balance": 5.00,
-                "purchases": [
-                    {
-                        "timestamp": 1404856800000,
-                        "amount": 100.0
-                    },
-                    {
-                        "timestamp": 1504856800000,
-                        "amount": 50.0
-                    }
-                ],
-                "vouchers": [
-                    {
-                        "date_created": 1404856800000,
-                        "expiration_date": 1504856800000,
-                        "value": 5.00,
-                        "redeemed": false,
-                        "expired": true
-                    },
-                    {
-                        "date_created": 1504856800000,
-                        "expiration_date": 1604856800000,
-                        "value": 5.00,
-                        "redeemed": false,
-                        "expired": false
-                    }
-                ]
+                "password": "hello123",
+                "id": 21
             }
-            
-### List [GET /customers/list.json]
 
-+ Request
+### Login [POST /customers/login]
+        
++ Request (application/json)
 
-    + Headers
-    
-            auth_token: 6AFAB32C-A71C-4527-98A1-A263A5B15F8C
-            
+    + Body
+
+            {
+                "email": "john.doe@test.com",
+                "password": "hello123"
+            }
+        
 + Response 200 (application/json)
 
     + Body
 
-            [ 
-                {
-                    "first": "John",
-                    "last": "Doe",
-                    "email": "john.doe@test.com",
-                    "amount_spent": 150.00,
-                    "loyalty_balance": 5.00
-                },
-                {
-                    "first": "Jane",
-                    "last": "Doe",
-                    "email": "jane.doe@test.com",
-                    "amount_spent": 250.00,
-                    "loyalty_balance": 10.00
-                }
-            ]
-            
-## Purchases [/purchases]
-            
-### List [GET /purchases/list.json?id={id}]
-
-+ Parameters
-
-    + id (String) - Customer ID
-    
-+ Request
-
-    + Headers
-
-            auth_token: 6AFAB32C-A71C-4527-98A1-A263A5B15F8C
+            {
+                "token": "CB0B2DEE-12D4-43FA-ACDA-9BBB3B0562CC",
+                "customer_id": "18"
+            }
+### Logout [POST /customers/logout]
         
++ Request (application/json)
+
+    + Body
+
+            {
+                "token": "CB0B2DEE-12D4-43FA-ACDA-9BBB3B0562CC",
+            }
+        
++ Response 200 (application/json)
+
+    + Body
+
+                {
+                    "Message":"Logout Successful",
+                    "Status":"OK"
+                }
+                
+### List [GET /customers]
+            
 + Response 200 (application/json)
 
     + Body
 
             [
                 {
-                    "timestamp": 1404856800000,
-                    "amount": 100.0
+                    "email": "changed.customer@test.com",
+                    "password": "hello456",
+                    "last": "Customer",
+                    "first": "Changed",
+                    "id": 1
                 },
                 {
-                    "timestamp": 1504856800000,
-                    "amount": 50.0
+                    "email": "new.customer@test.com",
+                    "password": "hello123",
+                    "last": "Customer",
+                    "first": "New",
+                    "id": 2
+                },
+                {
+                    "email": "new.customer@test.com",
+                    "password": "hello123",
+                    "last": "Customer",
+                    "first": "New",
+                    "id": 4
                 }
             ]
             
-### Create [POST /purchases/create.json]
+### Show [GET /customers/{id}]
+
++ Parameters
+
+    + id (String) - Customer ID
+            
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "email": "changed.customer@test.com",
+                "password": "hello456",
+                "last": "Customer",
+                "first": "Changed",
+                "id": 1
+            }
+            
+#### Customer Summary [/customers/summary]
+            
+### Customer Purchases [POST /customers/{id}/purchases]
+
++ Parameters
+
+    + id (String) - Customer ID
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "purchases":
+                            [
+                                {
+                                    "timestamp":1472026240,
+                                    "customer_id":1,
+                                    "id":1,
+                                    "amount":25
+                                },
+                                {
+                                    "timestamp":1472026240,
+                                    "customer_id":1,
+                                    "id":1,
+                                    "amount":25
+                                },
+                                {
+                                    "timestamp":1472026240,
+                                    "customer_id":1,
+                                    "id":1,
+                                    "amount":25
+                                },
+                                {
+                                    "timestamp":1472026240,
+                                    "customer_id":1,
+                                    "id":1,
+                                    "amount":25
+                                }
+                            ],
+                "total":245
+            }
+        
+### Customer Vouchers [POST /customers/{id}/vouchers]
+
++ Parameters
+
+    + id (String) - Customer ID
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "vouchers":
+                            [
+                                {
+                                  "expired": 1,
+                                  "timestamp": 1471989992,
+                                  "value": 5,
+                                  "expiration": 1471990352,
+                                  "redeemed": 1,
+                                  "customer_id": 1,
+                                  "id": 1
+                                },
+                                {
+                                  "expired": 1,
+                                  "timestamp": 1471990163,
+                                  "value": 5,
+                                  "expiration": 1471990523,
+                                  "redeemed": 1,
+                                  "customer_id": 1,
+                                  "id": 2
+                                },
+                                {
+                                  "expired": 1,
+                                  "timestamp": 1472025922,
+                                  "value": 5,
+                                  "expiration": 1472026282,
+                                  "redeemed": 1,
+                                  "customer_id": 1,
+                                  "id": 3
+                                }
+                            ],
+                "balance": 125
+            }
+        
+## Purchases [/purchases]
+
+### Create [POST /purchases]
 
 + Request (application/json)
 
     + Headers
 
-            auth_token: 6AFAB32C-A71C-4527-98A1-A263A5B15F8C
-
     + Body
 
             {
-                "customer_id": "57b430aafd36a68dc81c9884",
+                "customer_id": 1,
                 "amount": 85.00,
-                "redeem_voucher_ids": ["1", "2"]
+                "redeem_voucher_ids": [1, 2]
             }
         
 + Response 200 (application/json)
@@ -175,45 +227,99 @@ API for Royalty Loyalty System.
     + Body
 
             {
-                "success": true
+                "timestamp": 1472113040,
+                "customer_id": 1,
+                "id": 5,
+                "amount": 85
+            }
+            
+### List [GET /purchases]
+
++ Response 200 (application/json)
+
+    + Body
+
+            [
+                {
+                    "timestamp": 1472026240,
+                    "customer_id": 1,
+                    "id": 1,
+                    "amount": 25
+                },
+                {
+                    "timestamp": 1472026252,
+                    "customer_id": 1,
+                    "id": 2,
+                    "amount": 25
+                },
+                {
+                    "timestamp": 1472026254,
+                    "customer_id": 1,
+                    "id": 3,
+                    "amount": 25
+                }
+            ]
+            
+### Show [GET /purchases/{id}]
+
++ Parameters
+
+    + id (String) - Customer ID
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "timestamp": 1472026240,
+                "customer_id": 1,
+                "id": 1,
+                "amount": 25
+            }
+### CustomerPurchases [POST /customers/{id}/purchases]
+
++ Parameters
+
+    + id (String) - Customer ID
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "purchases":
+                            [
+                                {
+                                    "timestamp":1472026240,
+                                    "customer_id":1,
+                                    "id":1,
+                                    "amount":25
+                                },
+                                {
+                                    "timestamp":1472026240,
+                                    "customer_id":1,
+                                    "id":1,
+                                    "amount":25
+                                },
+                                {
+                                    "timestamp":1472026240,
+                                    "customer_id":1,
+                                    "id":1,
+                                    "amount":25
+                                },
+                                {
+                                    "timestamp":1472026240,
+                                    "customer_id":1,
+                                    "id":1,
+                                    "amount":25
+                                },
+                            ],
+                "total":245
             }
             
 ## Vouchers [/vouchers]
-            
-### List [GET /vouchers/list.json?id={id}]
 
-+ Parameters
-
-    + id (String) - Customer ID
-    
-+ Request
-
-    + Headers
-
-            auth_token: 6AFAB32C-A71C-4527-98A1-A263A5B15F8C
-        
-+ Response 200 (application/json)
-
-    + Body
-
-            [
-                {
-                    "date_created": 1404856800000,
-                    "expiration_date": 1504856800000,
-                    "value": 5.00,
-                    "redeemed": false,
-                    "expired": true
-                },
-                {
-                    "date_created": 1504856800000,
-                    "expiration_date": 1604856800000,
-                    "value": 5.00,
-                    "redeemed": false,
-                    "expired": false
-                }
-            ]
-            
-### Create [POST /vouchers/create.json]
+### Create [POST /vouchers]
 
 + Request (application/json)
 
@@ -237,31 +343,53 @@ API for Royalty Loyalty System.
                 "success": true
             }
             
-### Redeem [POST /vouchers/redeem.json]
-
-+ Request (application/json)
+### List [GET /vouchers]
+    
++ Request
 
     + Headers
 
             auth_token: 6AFAB32C-A71C-4527-98A1-A263A5B15F8C
-
-    + Body
-
-            [
-                "1", "2", "3"
-            ]
         
 + Response 200 (application/json)
 
     + Body
 
-            {
-                "success": true
-            }
+            [
+                {
+                    "expired": 1,
+                    "timestamp": 1471989992,
+                    "value": 5,
+                    "expiration": 1471990352,
+                    "redeemed": 1,
+                    "customer_id": 1,
+                    "id": 1
+                },
+                {
+                    "expired": 1,
+                    "timestamp": 1471990163,
+                    "value": 5,
+                    "expiration": 1471990523,
+                    "redeemed": 1,
+                    "customer_id": 1,
+                    "id": 2
+                },
+                {
+                    "expired": 1,
+                    "timestamp": 1472025922,
+                    "value": 5,
+                    "expiration": 1472026282,
+                    "redeemed": 1,
+                    "customer_id": 1,
+                    "id": 3
+                }
+            ]
             
-## Config [/config]
-            
-### Show [GET /config/show.json]
+### Show [GET /vouchers/{id}]
+
++ Parameters
+
+    + id (String) - Customer ID
     
 + Request
 
@@ -274,12 +402,36 @@ API for Royalty Loyalty System.
     + Body
 
             {
-                "minimum_amount": 100.00,
+                "expired": 1,
+                "timestamp": 1471989992,
+                "value": 5,
+                "expiration": 1471990352,
+                "redeemed": 1,
+                "customer_id": 1,
+                "id": 1
+            }
+            
+#### Vouchers Config [/vouchers/config]
+            
+### Show Vouchers Config [GET /vouchers/config]
+    
++ Request
+
+    + Headers
+
+            auth_token: 6AFAB32C-A71C-4527-98A1-A263A5B15F8C
+        
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "purchase_amount": 100.00,
                 "voucher_value": 5.00,
                 "voucher_duration": 360
             }
             
-### Update [POST /config/update.json]
+### Edit Vouchers Config [PUT /vouchers/config]
 
 + Request (application/json)
 
@@ -290,7 +442,7 @@ API for Royalty Loyalty System.
     + Body
 
             {
-                "minimum_amount": 100.00,
+                "purchase_amount": 100.00,
                 "voucher_value": 5.00,
                 "voucher_duration": 360
             }

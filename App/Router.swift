@@ -22,8 +22,8 @@ final class Router {
             }
             guard
                 let previousSession: UserSession = try UserSession.query().filter("user_id", userID).first()
-                else {
-                    return try self.drop.view("login.mustache")
+            else {
+                return try self.drop.view("login.mustache")
             }
             print(previousSession)
             return Response(redirect: "/customers")
@@ -106,12 +106,16 @@ extension Router {
 // MARK: - Users - Admin
 
 extension Router {
+    
     func configureUserRoutes() {
         let user = UserLoginController(droplet: drop)
-        drop.resource("user", user)
         
         drop.post("login") { request in
             return try user.login(request: request)
+        }
+        
+        drop.post("logout") { request in
+            return try user.logout(request: request)
         }
     }
     
