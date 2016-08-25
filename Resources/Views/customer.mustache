@@ -4,8 +4,15 @@
 	<!-- Customer Info -->
     <div class="jumbotron">
         <h2>{{ first }} {{ last }}</h2>
-        <p class="lead">{{ email }}</p>
-        <p><a class="btn btn-lg btn-success" href="#" role="button">Make Purchase</a></p>
+        <p>Email: {{ email }}</p>
+
+		<div class="alert alert-info" role="alert">
+		    <p class="lead">Cash spent: <strong>{{ cash_spent }}</strong></p>
+		    <p class="lead">Vouchers redeemed: <strong>{{ vouchers_redeemed }}</strong></p>
+		    <p class="lead">Loyalty balance: <strong>{{ loyalty_balance }}</strong></p>
+		</div>
+
+        <p><a class="btn btn-lg btn-success" data-toggle="modal" data-target="#purchaseModal">Make Purchase</a></p>
     </div>
 
 	<!-- Customer Purchases -->
@@ -14,13 +21,17 @@
         <tr>
             <th>ID</th>
             <th>Timestamp</th>
-            <th>Amount</th>
+            <th>Cash</th>
+            <th>Loyalty</th>
+            <th>Total</th>
         </tr>
         {{# purchases }}
-        <tr class='clickable-row' data-href='../purchases/{{ id }}'>
-            <td>{{ id }}</td>
+        <tr class='clickable-row' data-href='../purchases/{{ customer_id }}'>
+            <td>{{ purchase_id }}</td>
             <td>{{ timestamp }}</td>
-            <td>{{ amount }}</td>
+            <td>{{ cash }}</td>
+            <td>{{ loyalty }}</td>
+            <td>{{ total }}</td>
         </tr>
         {{/ purchases }}
     </table>
@@ -36,17 +47,75 @@
             <th>Redeemed</th>
             <th>Expired</th>
         </tr>
-        {{# vouchers }}
-        <tr class='clickable-row' data-href='../vouchers/{{ id }}'>
-            <td>{{ id }}</td>
+        {{# all_vouchers }}
+        <tr class='clickable-row' data-href='../vouchers/{{ customer_id }}'>
+            <td>{{ voucher_id }}</td>
             <td>{{ timestamp }}</td>
             <td>{{ expiration }}</td>
             <td>{{ value }}</td>
             <td>{{ redeemed }}</td>
             <td>{{ expired }}</td>
         </tr>
-        {{/ vouchers }}
+        {{/ all_vouchers }}
     </table>
+
+    <!-- Modal -->
+    <div class="modal fade" id="purchaseModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Make purchase for {{ first }} {{ last }}</h4>
+        </div>
+
+        <div id="purchaseSuccessAlert" class="alert alert-success" role="alert">
+  			<strong>Well done!</strong> Please wait a bit...
+		</div>
+
+        <div id="purchaseErrorAlert" class="alert alert-danger" role="alert">
+  			<strong>Oh snap!</strong> Purchase amount has to be more then just 0.00...
+		</div>
+
+        <div class="modal-body">
+            <form id="purchaseForm" action="/purchases" method="post">
+            	<input type="hidden" name="customer_id" value="{{ customer_id }}">
+
+                <div class="form-group">
+                    <label for="purchaseAmount">Purchase Amount</label>
+                    <input type="number" class="form-control numberField" id="purchaseAmount" name="amount" placeholder="0.0">
+                </div>
+
+			    <!-- Customer Vouchers -->
+			    <label for="vouchersTable">Valid Vouchers</label>
+			    <table id="vouchersTable" class="table table-striped table-hover">
+			        <tr>
+			        	<th>Redeem</th>
+			            <th>ID</th>
+			            <th>Expiration</th>
+			            <th>Value</th>
+			        </tr>
+			        {{# valid_vouchers }}
+			        <tr class='selectable-row'>
+			        	<td><input type="checkbox" name="voucher_ids[]" value="{{ voucher_id }}"></td>
+			            <td>{{ voucher_id }}</td>
+			            <td>{{ expiration }}</td>
+			            <td>{{ value }}</td>
+			        </tr>
+			        {{/ valid_vouchers }}
+			    </table>
+
+            </form>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary btn-success" onclick="makePurchase();">
+            	Make Purchase
+            </button>
+        </div>
+    </div>
+    </div>
+    </div>
 
 </div> <!-- /container -->
 {{>footer}}

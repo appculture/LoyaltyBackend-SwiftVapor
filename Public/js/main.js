@@ -8,6 +8,13 @@ jQuery(document).ready(function($) {
         window.document.location = $(this).data("href");
     });
 
+    // make table rows selectable
+    $('.selectable-row').click(function(event) {
+    	if (event.target.type !== 'checkbox') {
+      		$(':checkbox', this).trigger('click');
+    	}
+	});
+
     // client side validation to allow only numbers in textfield
     $(".numberField").keydown(function (e) {
         // Allow: backspace, delete, tab, escape, enter and .
@@ -30,3 +37,17 @@ jQuery(document).ready(function($) {
     });
                        
 });
+
+function makePurchase() {
+	var amount = document.getElementById('purchaseAmount').value;
+
+	if (amount > 0) {
+		$("#purchaseErrorAlert").hide();
+		$("#purchaseSuccessAlert").show("slow", function() {
+    		document.getElementById('purchaseForm').submit();
+  		});
+	} else {
+		$("#purchaseSuccessAlert").hide();
+		$("#purchaseErrorAlert").show("fast");
+	}
+}
