@@ -20,7 +20,8 @@ class VoucherMiddleware: Middleware {
                     "timestamp": voucher.timestamp.dateValue.readable,
                     "expiration": voucher.expiration.dateValue.readable,
                     "value": voucher.value,
-                    "redeemed": voucher.redeemed > 0 ? "YES" : "NO"
+                    "redeemed": voucher.redeemedBool.readable,
+                    "expired": voucher.expiredBool.readable
                 ]).makeResponse()
             } else {
                 response.json = voucher.makeJSON()
@@ -36,7 +37,8 @@ class VoucherMiddleware: Middleware {
                             "timestamp": voucher.timestamp.dateValue.readable,
                             "expiration": voucher.expiration.dateValue.readable,
                             "value": voucher.value,
-                            "redeemed": voucher.redeemed > 0 ? "YES" : "NO"
+                            "redeemed": voucher.redeemedBool.readable,
+                            "expired": voucher.expiredBool.readable
                         ]
                     }
                 ]).makeResponse()

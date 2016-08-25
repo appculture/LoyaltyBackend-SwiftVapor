@@ -23,3 +23,11 @@ extension Date {
     }
     
 }
+
+extension Bool {
+    
+    var readable: String {
+        return self ? "YES" : "NO"
+    }
+    
+}
