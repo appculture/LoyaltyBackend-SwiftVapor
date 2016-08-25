@@ -55,6 +55,9 @@ final class User: Model {
             user.string("email")
             user.string("password")
         }
+        
+        var admin = User(first: "System", last: "Root", email: "admin@admin.com", password: "admin")
+        try admin.save()
     }
     
     static func revert(_ database: Fluent.Database) throws {
