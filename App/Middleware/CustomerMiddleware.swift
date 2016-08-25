@@ -24,12 +24,23 @@ class CustomerMiddleware: Middleware {
                     ]
                 }
                 
+                let vouchers = try customer.vouchers().all().map { voucher -> [String : Any] in
+                    return [
+                        "id": voucher.id?.string ?? "",
+                        "timestamp": voucher.timestamp,
+                        "expiration": voucher.expiration,
+                        "value": voucher.value,
+                        "redeemed": voucher.redeemed
+                    ]
+                }
+                
                 return try drop.view("customer.mustache", context: [
                     "id": customer.id?.string ?? "",
                     "first": customer.first,
                     "last": customer.last,
                     "email": customer.email,
-                    "purchases": purchases
+                    "purchases": purchases,
+                    "vouchers": vouchers
                 ]).makeResponse()
                 
             } else {
