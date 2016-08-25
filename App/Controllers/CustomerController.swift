@@ -142,7 +142,7 @@ extension CustomerController {
 
     func getPurchases(request: Request, customer: Customer) throws -> ResponseRepresentable {
         let allPurchases = try customer.purchases().all()
-        let total = allPurchases.reduce(0.0) {$0 + $1.amount}
+        let total = allPurchases.reduce(0.0) {$0 + ($1.cashAmount + $1.loyaltyAmount)}
         
         return try JSON([
             "purchases": allPurchases.makeJSON(),

@@ -12,20 +12,22 @@ final class Purchase: Model {
     var id: Node?
     
     var timestamp: Int
-    var amount: Double
+    var cashAmount: Double
+    var loyaltyAmount: Double
     
     var customerID: Node
     
     // MARK: - Init
     
-    convenience init(amount: Double, customerID: Node) {
+    convenience init(cashAmount: Double, loyaltyAmount: Double, customerID: Node) {
         let timestamp = Int(Date().timeIntervalSince1970)
-        self.init(timestamp: timestamp, amount: amount, customerID: customerID)
+        self.init(timestamp: timestamp, cashAmount: cashAmount, loyaltyAmount: loyaltyAmount, customerID: customerID)
     }
     
-    init(timestamp: Int, amount: Double, customerID: Node) {
+    init(timestamp: Int, cashAmount: Double, loyaltyAmount: Double, customerID: Node) {
         self.timestamp = timestamp
-        self.amount = amount
+        self.cashAmount = cashAmount
+        self.loyaltyAmount = loyaltyAmount
         self.customerID = customerID
     }
     
@@ -34,7 +36,8 @@ final class Purchase: Model {
     init(node: Node, in context: Context) throws {
         id = try node.extract("id")
         timestamp = try node.extract("timestamp")
-        amount = try node.extract("amount")
+        cashAmount = try node.extract("cash_amount")
+        loyaltyAmount = try node.extract("loyalty_amount")
         customerID = try node.extract("customer_id")
     }
     
@@ -42,7 +45,8 @@ final class Purchase: Model {
         return try Node(node: [
             "id": id,
             "timestamp": timestamp,
-            "amount": amount,
+            "cash_amount": cashAmount,
+            "loyalty_amount": loyaltyAmount,
             "customer_id": customerID
         ])
     }
@@ -53,7 +57,8 @@ final class Purchase: Model {
         try database.create(entity) { purchase in
             purchase.id()
             purchase.int("timestamp")
-            purchase.double("amount")
+            purchase.double("cash_amount")
+            purchase.double("loyalty_amount")
             purchase.int("customer_id")
         }
     }

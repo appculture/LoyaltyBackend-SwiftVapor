@@ -5,13 +5,17 @@
         <tr>
             <th>ID</th>
             <th>Timestamp</th>
-            <th>Amount</th>
+            <th>Cash</th>
+            <th>Loyalty</th>
+            <th>Total</th>
         </tr>
         {{# purchases }}
         <tr class='clickable-row' data-href='purchases/{{ id }}'>
             <td>{{ id }}</td>
             <td>{{ timestamp }}</td>
-            <td>{{ amount }}</td>
+            <td>{{ cash }}</td>
+            <td>{{ loyalty }}</td>
+            <td>{{ total }}</td>
         </tr>
         {{/ purchases }}
     </table>

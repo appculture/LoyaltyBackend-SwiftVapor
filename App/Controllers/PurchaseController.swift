@@ -23,11 +23,15 @@ final class PurchaseController: ResourceRepresentable {
             throw Abort.badRequest
         }
         
-        var purchase = Purchase(amount: amount, customerID: Node(customerID))
+        let voucherIDs = request.data["voucher_ids"].array
         
-        try purchase.save()
+        let purchase = try LoyaltyController.makePurchase(customerID: Node(customerID), amount: amount, voucherIDs: voucherIDs)
         
-        return purchase
+        if request.accept.prefers("html") {
+            return Response(redirect: "/customers/\(customerID)")
+        } else {
+            return purchase
+        }
     }
     
     func show(request: Request, item purchase: Purchase) throws -> ResponseRepresentable {

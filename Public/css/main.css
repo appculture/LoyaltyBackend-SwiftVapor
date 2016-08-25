@@ -5,7 +5,7 @@ body {
 }
 
 /* Table Rows */
-tr.clickable-row {
+tr.clickable-row, tr.selectable-row {
     cursor: pointer;
 }
 
@@ -63,4 +63,9 @@ tr.clickable-row {
     margin-bottom: 10px;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
+}
+
+/* Alerts */
+#purchaseSuccessAlert, #purchaseErrorAlert {
+    display: none;
 }
