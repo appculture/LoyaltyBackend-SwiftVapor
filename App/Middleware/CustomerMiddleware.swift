@@ -20,7 +20,8 @@ class CustomerMiddleware: Middleware {
                     return [
                         "purchase_id": purchase.id?.string ?? "",
                         "timestamp": purchase.timestamp.dateValue.readable,
-                        "amount": purchase.amount
+                        "cash_amount": purchase.cashAmount,
+                        "loyalty_amount": purchase.loyaltyAmount
                     ]
                 }
                 
