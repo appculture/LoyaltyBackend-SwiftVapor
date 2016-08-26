@@ -2,10 +2,11 @@ import Vapor
 
 final class LoyaltyController {
     
-    static func makePurchase(customerID: Node, amount: Double, voucherIDs: [Polymorphic]?) throws -> Purchase {
+    static func makePurchase(customerID: Node, totalAmount: Double, voucherIDs: [Polymorphic]?) throws -> Purchase {
         let vouchersAmount = try redeemVouchers(voucherIDs: voucherIDs)
+        let cashAmount = totalAmount - vouchersAmount
         
-        var purchase = Purchase(cashAmount: amount, loyaltyAmount: vouchersAmount, customerID: customerID)
+        var purchase = Purchase(cashAmount: cashAmount, loyaltyAmount: vouchersAmount, customerID: customerID)
         try purchase.save()
         
         try generateVouchers(customerID: customerID)
@@ -46,7 +47,7 @@ final class LoyaltyController {
         let handledCash = ((totalVouchersAmount / config.voucherValue) * config.purchaseAmount)
         var unhandledCash = totalCashPurchaseAmount - handledCash
         
-        while unhandledCash > config.purchaseAmount {
+        while unhandledCash >= config.purchaseAmount {
             var voucher = Voucher(customerID: customerID)
             try voucher.save()
             unhandledCash -= config.purchaseAmount
