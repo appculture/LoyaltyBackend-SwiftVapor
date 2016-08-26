@@ -94,21 +94,13 @@ extension Purchase {
 extension Response {
     
     var purchase: Purchase? {
-        get {
-            return storage["purchase"] as? Purchase
-        }
-        set(purchase) {
-            storage["purchase"] = purchase
-        }
+        get { return storage["purchase"] as? Purchase }
+        set { storage["purchase"] = newValue }
     }
     
     var purchases: [Purchase]? {
-        get {
-            return storage["purchases"] as? [Purchase]
-        }
-        set(purchases) {
-            storage["purchases"] = purchases
-        }
+        get { return storage["purchases"] as? [Purchase] }
+        set { storage["purchases"] = newValue }
     }
     
 }

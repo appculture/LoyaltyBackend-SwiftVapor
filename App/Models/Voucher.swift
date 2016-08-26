@@ -23,8 +23,9 @@ final class Voucher: Model {
         return redeemed > 0 ? true : false
     }
     var expiredBool: Bool {
-        let now = Int(Date().timeIntervalSince1970)
-        return now > expiration
+        let now = Date()
+        let date = Int(now.timeIntervalSince1970)
+        return date > expiration
     }
     var valid: Bool {
         return !redeemedBool && !expiredBool
@@ -32,9 +33,13 @@ final class Voucher: Model {
     
     // MARK: - Init
     
-    convenience init(customerID: Node) {
+    convenience init(customerID: Node) throws {
+        guard let config = try VoucherConfig.all().first else {
+            throw Abort.serverError
+        }
+        
         let now = Date()
-        let future = now + 360
+        let future = now + config.voucherDuration
         
         let timestamp = Int(now.timeIntervalSince1970)
         let expiration = Int(future.timeIntervalSince1970)
@@ -131,21 +136,13 @@ extension Voucher {
 extension Response {
     
     var voucher: Voucher? {
-        get {
-            return storage["voucher"] as? Voucher
-        }
-        set(voucher) {
-            storage["voucher"] = voucher
-        }
+        get { return storage["voucher"] as? Voucher }
+        set { storage["voucher"] = voucher }
     }
     
     var vouchers: [Voucher]? {
-        get {
-            return storage["vouchers"] as? [Voucher]
-        }
-        set(vouchers) {
-            storage["vouchers"] = vouchers
-        }
+        get { return storage["vouchers"] as? [Voucher] }
+        set { storage["vouchers"] = newValue }
     }
     
 }

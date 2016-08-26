@@ -91,21 +91,13 @@ extension Customer {
 extension Response {
     
     var customer: Customer? {
-        get {
-            return storage["customer"] as? Customer
-        }
-        set(customer) {
-            storage["customer"] = customer
-        }
+        get { return storage["customer"] as? Customer }
+        set { storage["customer"] = newValue }
     }
     
     var customers: [Customer]? {
-        get {
-            return storage["customers"] as? [Customer]
-        }
-        set(customers) {
-            storage["customers"] = customers
-        }
+        get { return storage["customers"] as? [Customer] }
+        set { storage["customers"] = newValue }
     }
     
 }

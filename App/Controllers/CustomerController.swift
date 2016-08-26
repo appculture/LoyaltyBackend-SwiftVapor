@@ -33,7 +33,6 @@ final class CustomerController: ResourceRepresentable {
         }
         
         var customer = Customer(first: first, last: last, email: email, password: password)
-        
         try customer.save()
         
         return customer

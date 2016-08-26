@@ -7,7 +7,7 @@ final class VoucherConfig: Model {
     
     static var entity: String = "voucher_config"
     
-    static var `default` = VoucherConfig(purchaseAmount: 100.0, voucherValue: 5.0, voucherDuration: 360)
+    static var `default` = VoucherConfig(purchaseAmount: 100.0, voucherValue: 5.0, voucherDuration: 360.0)
     
     // MARK: - Properties
     
@@ -15,11 +15,11 @@ final class VoucherConfig: Model {
     
     var purchaseAmount: Double
     var voucherValue: Double
-    var voucherDuration: Int
+    var voucherDuration: Double
     
     // MARK: - Init
     
-    init(purchaseAmount: Double, voucherValue: Double, voucherDuration: Int) {
+    init(purchaseAmount: Double, voucherValue: Double, voucherDuration: Double) {
         self.purchaseAmount = purchaseAmount
         self.voucherValue = voucherValue
         self.voucherDuration = voucherDuration
@@ -50,7 +50,7 @@ final class VoucherConfig: Model {
             config.id()
             config.double("purchase_amount")
             config.double("voucher_value")
-            config.int("voucher_duration")
+            config.double("voucher_duration")
         }
         
         var defaultConfig = VoucherConfig.`default`

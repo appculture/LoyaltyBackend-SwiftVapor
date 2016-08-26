@@ -28,8 +28,7 @@ final class VoucherController: ResourceRepresentable {
             throw Abort.badRequest
         }
         
-        var voucher = Voucher(customerID: Node(customerID))
-        
+        var voucher = try Voucher(customerID: Node(customerID))
         try voucher.save()
         
         return voucher
@@ -87,7 +86,7 @@ extension VoucherController {
         guard
             let purchaseAmount = request.data["purchase_amount"].double,
             let voucherValue = request.data["voucher_value"].double,
-            let voucherDuration = request.data["voucher_duration"].int
+            let voucherDuration = request.data["voucher_duration"].double
         else {
             throw Abort.badRequest
         }

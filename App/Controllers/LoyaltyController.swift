@@ -48,7 +48,7 @@ final class LoyaltyController {
         var unhandledCash = totalCashPurchaseAmount - handledCash
         
         while unhandledCash >= config.purchaseAmount {
-            var voucher = Voucher(customerID: customerID)
+            var voucher = try Voucher(customerID: customerID)
             try voucher.save()
             unhandledCash -= config.purchaseAmount
         }
