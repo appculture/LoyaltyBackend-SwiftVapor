@@ -23,6 +23,4 @@ router.configureRoutes()
 
 // MARK: - Serve Droplet
 
-let port = drop.config["app", "port"].int ?? 80
-
 drop.serve()

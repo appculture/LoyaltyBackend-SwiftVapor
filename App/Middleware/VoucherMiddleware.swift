@@ -3,11 +3,17 @@ import HTTP
 
 class VoucherMiddleware: Middleware {
     
+    // MARK: - Properties
+    
     let drop: Droplet
+    
+    // MARK: - Init
     
     init(droplet: Droplet) {
         drop = droplet
     }
+    
+    // MARK: - Override
     
     func respond(to request: Request, chainingTo chain: Responder) throws -> Response {
         

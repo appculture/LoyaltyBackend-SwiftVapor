@@ -5,11 +5,17 @@ final class VoucherController: ResourceRepresentable {
     
     typealias Item = Voucher
     
+    // MARK: - Properties
+    
     let drop: Droplet
+    
+    // MARK: - Init
     
     init(droplet: Droplet) {
         drop = droplet
     }
+    
+    // MARK: - REST
     
     func index(request: Request) throws -> ResponseRepresentable {
         return try Voucher.all().makeResponse()
@@ -52,6 +58,8 @@ final class VoucherController: ResourceRepresentable {
     }
     
 }
+
+// MARK: - Config
 
 extension VoucherController {
     

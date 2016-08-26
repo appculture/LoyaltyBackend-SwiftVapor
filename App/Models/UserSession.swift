@@ -34,7 +34,7 @@ final class UserSession: Model {
             "id": id,
             "token": token,
             "user_id": userID,
-            ])
+        ])
     }
     
     // MARK: - Preparation

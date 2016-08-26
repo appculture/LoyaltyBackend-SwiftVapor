@@ -42,7 +42,7 @@ final class User: Model {
             "last": last,
             "email": email,
             "password": password
-            ])
+        ])
     }
     
     // MARK: - Preparation
@@ -95,4 +95,5 @@ extension User {
         response.user = self
         return response
     }
+    
 }

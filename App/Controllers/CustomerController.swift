@@ -6,11 +6,17 @@ final class CustomerController: ResourceRepresentable {
     
     typealias Item = Customer
     
+    // MARK: - Properties
+    
     let drop: Droplet
+    
+    // MARK: - Init
     
     init(droplet: Droplet) {
         drop = droplet
     }
+    
+    // MARK: - REST
     
     func index(request: Request) throws -> ResponseRepresentable {
         return try Customer.all().makeResponse()
@@ -76,6 +82,8 @@ final class CustomerController: ResourceRepresentable {
     
 }
 
+// MARK: - Login / Logout
+
 extension CustomerController {
     
     func login(request: Request) throws -> ResponseRepresentable {
@@ -137,6 +145,8 @@ extension CustomerController {
     }
     
 }
+
+// MARK: - Purchases / Vouchers
 
 extension CustomerController {
 

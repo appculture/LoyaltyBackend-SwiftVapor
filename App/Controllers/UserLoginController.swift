@@ -4,11 +4,17 @@ import Foundation
 
 final class UserLoginController {
     
+    // MARK: - Properties
+    
     let drop: Droplet
+    
+    // MARK: - Init
     
     init(droplet: Droplet) {
         drop = droplet
     }
+    
+    // MARK: - Login / Logout
     
     func login(request: Request) throws -> ResponseRepresentable {
        guard

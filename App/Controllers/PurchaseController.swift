@@ -5,11 +5,17 @@ final class PurchaseController: ResourceRepresentable {
     
     typealias Item = Purchase
     
+    // MARK: - Properties
+    
     let drop: Droplet
+    
+    // MARK: - Init
     
     init(droplet: Droplet) {
         drop = droplet
     }
+    
+    // MARK: - REST
     
     func index(request: Request) throws -> ResponseRepresentable {
         return try Purchase.all().makeResponse()
