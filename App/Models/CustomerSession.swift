@@ -52,28 +52,3 @@ final class CustomerSession: Model {
     }
     
 }
-
-// MARK: - Override
-
-extension CustomerSession {
-    
-    func makeResponse() throws -> Response {
-        let response = Response()
-        response.customerSession = self
-        return response
-    }
-    
-}
-
-extension Response {
-    
-    var customerSession: CustomerSession? {
-        get {
-            return storage["customer_session"] as? CustomerSession
-        }
-        set(customerSession) {
-            storage["customer_session"] = customerSession
-        }
-    }
-    
-}

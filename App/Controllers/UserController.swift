@@ -2,7 +2,7 @@ import Vapor
 import HTTP
 import Foundation
 
-final class UserLoginController {
+final class UserController {
     
     // MARK: - Properties
     
@@ -17,15 +17,15 @@ final class UserLoginController {
     // MARK: - Login / Logout
     
     func login(request: Request) throws -> ResponseRepresentable {
-       guard
-        let username: String = request.data["email"]?.string,
-        let password: String = request.data["password"]?.string
+        guard
+            let username = request.data["email"]?.string,
+            let password = request.data["password"]?.string
         else {
             throw Abort.custom(status: .notFound, message: "User not found!")
         }
         
         guard
-            let user: User = try User.query().filter("email", username).first(),
+            let user = try User.query().filter("email", username).first(),
             let userID = user.id
         else {
             throw Abort.custom(status: Status.notImplemented, message: "No Customer")
@@ -38,14 +38,14 @@ final class UserLoginController {
                 let randomUUID = NSUUID().uuidString
             #endif
             
-            let response: Response = Response(redirect: "/customers")
+            let response = Response(redirect: "/customers")
             let cookie = Cookie(name: "user", value: userID.string!)
             response.cookies.insert(cookie)
             
             guard
-                let _: UserSession = try UserSession.query().filter("user_id", userID).first()
+                let _ = try UserSession.query().filter("user_id", userID).first()
             else {
-                var userSession: UserSession = UserSession(token: randomUUID, userID: userID)
+                var userSession = UserSession(token: randomUUID, userID: userID)
                 try userSession.save()
                 return response
             }
@@ -58,23 +58,23 @@ final class UserLoginController {
     }
     
     func logout(request: Request) throws -> ResponseRepresentable {
-        var userID: String = ""
-        let cookieArray: Array = request.cookies.array
-        for cookie: Cookie in cookieArray {
+        var userID = ""
+        let cookieArray = request.cookies.array
+        for cookie in cookieArray {
             if cookie.name == "user" {
                 userID = cookie.value
             }
         }
         
         guard
-            let previousSession: UserSession = try UserSession.query().filter("user_id", userID).first()
+            let previousSession = try UserSession.query().filter("user_id", userID).first()
         else {
             throw Abort.custom(status: Status.internalServerError, message: "Server Error!")
         }
         
         try previousSession.delete()
         
-        let response: Response = Response(redirect: "/")
+        let response = Response(redirect: "/")
         response.cookies.removeAll()
         return response
     }

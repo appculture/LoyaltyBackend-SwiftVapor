@@ -88,14 +88,14 @@ extension CustomerController {
     
     func login(request: Request) throws -> ResponseRepresentable {
         guard
-            let username: String = request.data["email"].string,
-            let password: String = request.data["password"]?.string
+            let username = request.data["email"].string,
+            let password = request.data["password"]?.string
         else {
             throw Abort.custom(status: Status.preconditionFailed, message: "Missing parameter")
         }
         
         guard
-            let customer: Customer = try Customer.query().filter("email", username).first(),
+            let customer = try Customer.query().filter("email", username).first(),
             let customerID = customer.id
         else {
             throw Abort.custom(status: Status.notImplemented, message: "No Customer")
@@ -110,9 +110,9 @@ extension CustomerController {
             #endif
 
             guard
-                let previousSession: CustomerSession = try CustomerSession.query().filter("customer_id", customerID).first()
+                let previousSession = try CustomerSession.query().filter("customer_id", customerID).first()
             else {
-                var customerSession: CustomerSession = CustomerSession(token: randomUUID, customerID: customerID)
+                var customerSession = CustomerSession(token: randomUUID, customerID: customerID)
                 try customerSession.save()
                 return customerSession.makeJSON()
             }
@@ -125,13 +125,13 @@ extension CustomerController {
     
     func logout(request: Request) throws -> ResponseRepresentable {
         guard
-            let token: String = request.data["token"].string
+            let token = request.data["token"].string
         else {
             throw Abort.custom(status: Status.preconditionFailed, message: "Missing parameter")
         }
         
         guard
-            let previousSession: CustomerSession = try CustomerSession.query().filter("token", token).first()
+            let previousSession = try CustomerSession.query().filter("token", token).first()
         else {
             throw Abort.custom(status: Status.internalServerError, message: "Server Error!")
         }

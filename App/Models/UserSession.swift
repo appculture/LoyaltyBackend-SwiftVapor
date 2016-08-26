@@ -52,28 +52,3 @@ final class UserSession: Model {
     }
     
 }
-
-// MARK: - Override
-
-extension UserSession {
-    
-    func makeResponse() throws -> Response {
-        let response = Response()
-        response.userSession = self
-        return response
-    }
-    
-}
-
-extension Response {
-    
-    var userSession: UserSession? {
-        get {
-            return storage["user_session"] as? UserSession
-        }
-        set(userSession) {
-            storage["user_session"] = userSession
-        }
-    }
-    
-}

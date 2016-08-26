@@ -10,29 +10,37 @@ final class Router {
     }
     
     func configureRoutes() {
-        
+        configureHomepage()
+        configureCustomers()
+        configurePurchases()
+        configureVouchers()
+        configureUsers()
+    }
+    
+}
+
+// MARK: - Homepage
+
+extension Router {
+    
+    func configureHomepage() {
         drop.get("/") { request in
-            print(request.cookies.array)
-            var userID: String = ""
-            let cookieArray: Array = request.cookies.array
+            var userID = ""
+            let cookieArray = request.cookies.array
             for cookie: Cookie in cookieArray {
                 if cookie.name == "user" {
                     userID = cookie.value
                 }
             }
+            
             guard
-                let previousSession: UserSession = try UserSession.query().filter("user_id", userID).first()
+                let _ = try UserSession.query().filter("user_id", userID).first()
             else {
                 return try self.drop.view("login.mustache")
             }
-            print(previousSession)
+            
             return Response(redirect: "/customers")
         }
-        
-        configureCustomersRoutes()
-        configurePurchasesRoutes()
-        configureVouchersRoutes()
-        configureUserRoutes()
     }
     
 }
@@ -41,7 +49,7 @@ final class Router {
 
 extension Router {
     
-    func configureCustomersRoutes() {
+    func configureCustomers() {
         let customers = CustomerController(droplet: drop)
         drop.resource("customers", customers)
         
@@ -71,7 +79,7 @@ extension Router {
 
 extension Router {
     
-    func configurePurchasesRoutes() {
+    func configurePurchases() {
         let purchases = PurchaseController(droplet: drop)
         drop.resource("purchases", purchases)
         
@@ -85,7 +93,7 @@ extension Router {
 
 extension Router {
     
-    func configureVouchersRoutes() {
+    func configureVouchers() {
         let vouchers = VoucherController(droplet: drop)
         drop.resource("vouchers", vouchers)
         
@@ -107,8 +115,8 @@ extension Router {
 
 extension Router {
     
-    func configureUserRoutes() {
-        let user = UserLoginController(droplet: drop)
+    func configureUsers() {
+        let user = UserController(droplet: drop)
         
         drop.post("login") { request in
             return try user.login(request: request)
