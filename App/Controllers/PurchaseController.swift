@@ -25,7 +25,7 @@ final class PurchaseController: ResourceRepresentable {
         
         let voucherIDs = request.data["voucher_ids"].array
         
-        let purchase = try LoyaltyController.makePurchase(customerID: Node(customerID), amount: amount, voucherIDs: voucherIDs)
+        let purchase = try LoyaltyController.makePurchase(customerID: Node(customerID), totalAmount: amount, voucherIDs: voucherIDs)
         
         if request.accept.prefers("html") {
             return Response(redirect: "/customers/\(customerID)")
