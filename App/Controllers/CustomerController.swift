@@ -38,7 +38,7 @@ final class CustomerController: ResourceRepresentable {
         return customer
     }
     
-    func show(request: Request, item customer: Customer) throws -> ResponseRepresentable {        
+    func show(request: Request, item customer: Customer) throws -> ResponseRepresentable {
         return customer
     }
     
