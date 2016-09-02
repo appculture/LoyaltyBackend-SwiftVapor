@@ -54,7 +54,7 @@ class AuthMiddleware: Middleware {
             let allowed = ["/"]
             return allowed.contains(path)
         case .post:
-            let allowed = ["/customers", "/customers/login", "/login"]
+            let allowed = ["/users", "/login"]
             return allowed.contains(path)
         default:
             return false

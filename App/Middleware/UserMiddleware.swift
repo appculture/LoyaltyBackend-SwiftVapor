@@ -1,7 +1,7 @@
 import Vapor
 import HTTP
 
-class CustomerMiddleware: Middleware {
+class UserMiddleware: Middleware {
     
     // MARK: - Properties
     
@@ -14,16 +14,16 @@ class CustomerMiddleware: Middleware {
     }
     
     // MARK: - Override
-
-	func respond(to request: Request, chainingTo chain: Responder) throws -> Response {
+    
+    func respond(to request: Request, chainingTo chain: Responder) throws -> Response {
         
         let response = try chain.respond(to: request)
         
-        if let customer = response.customer {
+        if let user = response.user {
             if request.accept.prefers("html") {
                 
-                let allPurchases = try customer.purchases().all()
-                let allVouchers = try customer.vouchers().all()
+                let allPurchases = try user.purchases().all()
+                let allVouchers = try user.vouchers().all()
                 let redeemedVouchers = allVouchers.filter { $0.redeemedBool }
                 let validVouchers = allVouchers.filter { $0.valid }
                 
@@ -63,11 +63,11 @@ class CustomerMiddleware: Middleware {
                     ]
                 }
                 
-                return try drop.view("customer.mustache", context: [
-                    "customer_id": customer.id.string ?? "",
-                    "first": customer.first,
-                    "last": customer.last,
-                    "email": customer.email,
+                return try drop.view("user.mustache", context: [
+                    "user_id": user.id.string ?? "",
+                    "first": user.first,
+                    "last": user.last,
+                    "email": user.email,
                     "purchases": purchases,
                     "all_vouchers": allVouchersDictionary,
                     "valid_vouchers": validVouchersDictionary,
@@ -77,28 +77,28 @@ class CustomerMiddleware: Middleware {
                 ]).makeResponse()
                 
             } else {
-                response.json = customer.makeJSON()
+                response.json = user.makeJSON()
             }
         }
         
-        if let customers = response.customers {
+        if let users = response.users {
             if request.accept.prefers("html") {
-                return try drop.view("customers.mustache", context: [
-                    "customers": customers.map { customer -> [String : Any] in
+                return try drop.view("users.mustache", context: [
+                    "users": users.map { user -> [String : Any] in
                         return [
-                            "id": customer.id.string ?? "",
-                            "first": customer.first,
-                            "last": customer.last,
-                            "email": customer.email
+                            "id": user.id.string ?? "",
+                            "first": user.first,
+                            "last": user.last,
+                            "email": user.email
                         ]
                     }
                 ]).makeResponse()
             } else {
-                response.json = customers.makeJSON()
+                response.json = users.makeJSON()
             }
         }
-
+        
         return response
-	}
-
+    }
+    
 }

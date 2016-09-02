@@ -1,4 +1,3 @@
-
 import Vapor
 import Fluent
 import HTTP
@@ -66,33 +65,55 @@ final class User: Model {
     
 }
 
-extension Response {
+// MARK: - Relations
+
+extension User {
     
-    var user: User? {
-        get {
-            return storage["user"] as? User
-        }
-        set(user) {
-            storage["user"] = user
-        }
+    func purchases() throws -> Children<Purchase> {
+        return children()
     }
     
-    var users: [User]? {
-        get {
-            return storage["users"] as? [User]
-        }
-        set(users) {
-            storage["users"] = users
-        }
+    func vouchers() throws -> Children<Voucher> {
+        return children()
     }
     
 }
+
+// MARK: - Override
 
 extension User {
     
     func makeResponse() throws -> Response {
         let response = Response()
         response.user = self
+        return response
+    }
+    
+}
+
+extension Response {
+    
+    var user: User? {
+        get { return storage["user"] as? User }
+        set { storage["user"] = newValue }
+    }
+    
+    var users: [User]? {
+        get { return storage["users"] as? [User] }
+        set { storage["users"] = newValue }
+    }
+    
+}
+
+extension Sequence where Iterator.Element == User {
+    
+    func makeJSON() -> JSON {
+        return .array(self.map { $0.makeJSON() })
+    }
+    
+    func makeResponse() throws -> Response {
+        let response = Response()
+        response.users = Array(self)
         return response
     }
     

@@ -32,7 +32,7 @@ final class LoginController {
         if user.password == password {
             let session = try SessionController.createSession(forUser: user)
             
-            let response = Response(redirect: "/customers")
+            let response = Response(redirect: "/users")
             response.cookies.insert(session.cookie)
             
             return response

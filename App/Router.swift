@@ -12,7 +12,7 @@ final class Router {
     func configureRoutes() {
         configureHomepage()
         configureLogin()
-        configureCustomers()
+        configureUsers()
         configurePurchases()
         configureVouchers()
     }
@@ -41,7 +41,7 @@ extension Router {
         
         drop.get("/login") { request in
             if request.authorized {
-                return Response(redirect: "/customers")
+                return Response(redirect: "/users")
             } else {
                 return try self.drop.view("login.mustache")
             }
@@ -60,32 +60,24 @@ extension Router {
     
 }
 
-// MARK: - Customers
+// MARK: - Users
 
 extension Router {
     
-    func configureCustomers() {
-        let customers = CustomerController(droplet: drop)
-        drop.resource("customers", customers)
+    func configureUsers() {
+        let userController = UserController(droplet: drop)
+        drop.resource("users", userController)
         
-        drop.post("customers/login") { request in
-            return try customers.login(request: request)
+        drop.post("users", User.self, "purchases") { request, user in
+            return try userController.getPurchases(request: request, user: user)
         }
         
-        drop.post("customers/logout") { request in
-            return try customers.logout(request: request)
+        drop.post("users", User.self, "vouchers") { request, user in
+            return try userController.getVouchers(request: request, user: user)
         }
         
-        drop.post("customers", Customer.self, "purchases") { request, customer in
-            return try customers.getPurchases(request: request, customer: customer)
-        }
-        
-        drop.post("customers", Customer.self, "vouchers") { request, customer in
-            return try customers.getVouchers(request: request, customer: customer)
-        }
-        
-        let customerMiddleware = CustomerMiddleware(droplet: drop)
-        drop.middleware.append(customerMiddleware)
+        let userMiddleware = UserMiddleware(droplet: drop)
+        drop.middleware.append(userMiddleware)
     }
     
 }
@@ -95,8 +87,8 @@ extension Router {
 extension Router {
     
     func configurePurchases() {
-        let purchases = PurchaseController(droplet: drop)
-        drop.resource("purchases", purchases)
+        let purchaseController = PurchaseController(droplet: drop)
+        drop.resource("purchases", purchaseController)
         
         let purchaseMiddleware = PurchaseMiddleware(droplet: drop)
         drop.middleware.append(purchaseMiddleware)
@@ -109,15 +101,15 @@ extension Router {
 extension Router {
     
     func configureVouchers() {
-        let vouchers = VoucherController(droplet: drop)
-        drop.resource("vouchers", vouchers)
+        let voucherController = VoucherController(droplet: drop)
+        drop.resource("vouchers", voucherController)
         
         drop.get("vouchers/config") { request in
-            return try vouchers.getConfig(request: request)
+            return try voucherController.getConfig(request: request)
         }
         
         drop.post("vouchers/config") { request in
-            return try vouchers.editConfig(request: request)
+            return try voucherController.editConfig(request: request)
         }
         
         let voucherMiddleware = VoucherMiddleware(droplet: drop)

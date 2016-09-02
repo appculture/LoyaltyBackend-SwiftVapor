@@ -23,7 +23,7 @@ final class PurchaseController: ResourceRepresentable {
     
     func store(request: Request) throws -> ResponseRepresentable {
         guard
-            let customerID = request.data["customer_id"].int,
+            let userID = request.data["user_id"].int,
             let amount = request.data["amount"].double
         else {
             throw Abort.badRequest
@@ -31,10 +31,10 @@ final class PurchaseController: ResourceRepresentable {
         
         let voucherIDs = request.data["voucher_ids"].array
         
-        let purchase = try LoyaltyController.makePurchase(customerID: Node(customerID), totalAmount: amount, voucherIDs: voucherIDs)
+        let purchase = try LoyaltyController.makePurchase(userID: Node(userID), totalAmount: amount, voucherIDs: voucherIDs)
         
         if request.accept.prefers("html") {
-            return Response(redirect: "/customers/\(customerID)")
+            return Response(redirect: "/users/\(userID)")
         } else {
             return purchase
         }
@@ -44,7 +44,7 @@ final class PurchaseController: ResourceRepresentable {
         return purchase
     }
     
-    func update(request: Request, item customer: Purchase) throws -> ResponseRepresentable {
+    func update(request: Request, item purchase: Purchase) throws -> ResponseRepresentable {
         throw Abort.badRequest
     }
     

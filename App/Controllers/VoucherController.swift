@@ -23,12 +23,12 @@ final class VoucherController: ResourceRepresentable {
     
     func store(request: Request) throws -> ResponseRepresentable {
         guard
-            let customerID = request.data["customer_id"].int
+            let userID = request.data["user_id"].int
         else {
             throw Abort.badRequest
         }
         
-        var voucher = try Voucher(customerID: Node(customerID))
+        var voucher = try Voucher(userID: Node(userID))
         try voucher.save()
         
         return voucher
