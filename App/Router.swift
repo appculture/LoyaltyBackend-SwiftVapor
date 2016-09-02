@@ -11,10 +11,10 @@ final class Router {
     
     func configureRoutes() {
         configureHomepage()
+        configureLogin()
         configureCustomers()
         configurePurchases()
         configureVouchers()
-        configureUsers()
     }
     
 }
@@ -25,21 +25,36 @@ extension Router {
     
     func configureHomepage() {
         drop.get("/") { request in
-            var userID = ""
-            let cookieArray = request.cookies.array
-            for cookie: Cookie in cookieArray {
-                if cookie.name == "user" {
-                    userID = cookie.value
-                }
-            }
-            
-            guard
-                let _ = try UserSession.query().filter("user_id", userID).first()
-            else {
+            return try self.drop.view("home.mustache")
+        }
+    }
+    
+}
+
+// MARK: - Login
+
+extension Router {
+    
+    func configureLogin() {
+        let authMiddleware = AuthMiddleware(droplet: drop)
+        drop.middleware.append(authMiddleware)
+        
+        drop.get("/login") { request in
+            if request.authorized {
+                return Response(redirect: "/customers")
+            } else {
                 return try self.drop.view("login.mustache")
             }
-            
-            return Response(redirect: "/customers")
+        }
+        
+        let loginController = LoginController(droplet: drop)
+        
+        drop.post("login") { request in
+            return try loginController.login(request: request)
+        }
+        
+        drop.post("logout") { request in
+            return try loginController.logout(request: request)
         }
     }
     
@@ -107,24 +122,6 @@ extension Router {
         
         let voucherMiddleware = VoucherMiddleware(droplet: drop)
         drop.middleware.append(voucherMiddleware)
-    }
-    
-}
-
-// MARK: - Users - Admin
-
-extension Router {
-    
-    func configureUsers() {
-        let user = UserController(droplet: drop)
-        
-        drop.post("login") { request in
-            return try user.login(request: request)
-        }
-        
-        drop.post("logout") { request in
-            return try user.logout(request: request)
-        }
     }
     
 }

@@ -11,7 +11,7 @@ let mustache = VaporMustache.Provider(withIncludes: [
     "footer" : "Includes/footer.mustache"
 ])
 
-let preparations: [Preparation.Type] = [Customer.self, Purchase.self, Voucher.self, VoucherConfig.self, CustomerSession.self, User.self, UserSession.self]
+let preparations: [Preparation.Type] = [Customer.self, Purchase.self, Voucher.self, VoucherConfig.self, CustomerSession.self, User.self, UserSession.self, Session.self]
 let providers: [Vapor.Provider.Type] = [VaporMySQL.Provider.self]
 
 let drop = Droplet(preparations: preparations, providers: providers, initializedProviders: [mustache])
