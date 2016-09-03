@@ -32,10 +32,12 @@ final class UserController: ResourceRepresentable {
             throw Abort.badRequest
         }
         
+        let hashedPassword = drop.hash.make(password)
+        
         var user = User(first: first,
                         last: last,
                         email: email,
-                        password: password,
+                        password: hashedPassword,
                         roleID: Role.Customer.rawValue)
         try user.save()
         

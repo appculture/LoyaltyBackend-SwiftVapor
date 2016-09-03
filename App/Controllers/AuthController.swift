@@ -1,7 +1,7 @@
 import Vapor
 import HTTP
 
-final class LoginController {
+final class AuthController {
     
     // MARK: - Properties
     
@@ -26,10 +26,12 @@ final class LoginController {
         guard
             let user = try User.query().filter("email", username).first()
         else {
-            throw Abort.custom(status: Status.notImplemented, message: "User not found.")
+            throw Abort.custom(status: Status.forbidden, message: "User not found.")
         }
         
-        if user.password == password {
+        let hashedPassword = drop.hash.make(password)
+        
+        if user.password == hashedPassword {
             let session = try SessionController.createSession(forUser: user)
             
             let response = Response(redirect: "/users")
@@ -38,7 +40,7 @@ final class LoginController {
             return response
         }
         else {
-            throw Abort.custom(status: Status.internalServerError, message: "Wrong Password.")
+            throw Abort.custom(status: Status.forbidden, message: "Wrong Password.")
         }
     }
     
@@ -46,6 +48,7 @@ final class LoginController {
         guard let token = request.token else { throw Abort.badRequest }
         try SessionController.destroySession(withToken: token)
         
+        /// - NOTE: Removing cookies is not working in Vapor 0.16.2.
         request.cookies.removeAll()
         
         let response = Response(redirect: "/")

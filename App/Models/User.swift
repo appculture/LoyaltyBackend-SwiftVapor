@@ -73,7 +73,7 @@ final class User: Model {
         var admin = User(first: "System",
                          last: "Root",
                          email: "admin@admin.com",
-                         password: "admin",
+                         password: drop.hash.make("admin"),
                          roleID: Role.Admin.rawValue)
         try admin.save()
     }

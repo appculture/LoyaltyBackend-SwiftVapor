@@ -11,7 +11,7 @@ final class Router {
     
     func configureRoutes() {
         configureHomepage()
-        configureLogin()
+        configureAuthorization()
         configureUsers()
         configurePurchases()
         configureVouchers()
@@ -35,7 +35,7 @@ extension Router {
 
 extension Router {
     
-    func configureLogin() {
+    func configureAuthorization() {
         let authMiddleware = AuthMiddleware(droplet: drop)
         drop.middleware.append(authMiddleware)
         
@@ -47,14 +47,14 @@ extension Router {
             }
         }
         
-        let loginController = LoginController(droplet: drop)
+        let authController = AuthController(droplet: drop)
         
         drop.post("login") { request in
-            return try loginController.login(request: request)
+            return try authController.login(request: request)
         }
         
         drop.post("logout") { request in
-            return try loginController.logout(request: request)
+            return try authController.logout(request: request)
         }
     }
     
