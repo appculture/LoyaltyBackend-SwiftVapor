@@ -19,17 +19,7 @@ final class UserController: ResourceRepresentable {
     // MARK: - REST
     
     func index(request: Request) throws -> ResponseRepresentable {
-//        return try User.all().makeResponse()
-        
-        guard let user = request.user else { throw Abort.badRequest }
-        guard let role = user.role else { throw Abort.badRequest }
-        
-        switch role {
-        case .Admin:
-            return try User.all().makeResponse()
-        case .Customer:
-            return try user.makeResponse()
-        }
+        return try User.all().makeResponse()
     }
     
     func store(request: Request) throws -> ResponseRepresentable {

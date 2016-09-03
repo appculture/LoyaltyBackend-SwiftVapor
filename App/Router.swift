@@ -40,7 +40,7 @@ extension Router {
         drop.middleware.append(authMiddleware)
         
         drop.get("/login") { request in
-            if request.authorized {
+            if let _ = request.user {
                 return Response(redirect: "/users")
             } else {
                 return try self.drop.view("login.mustache")

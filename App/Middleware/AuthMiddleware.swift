@@ -16,49 +16,42 @@ class AuthMiddleware: Middleware {
     // MARK: - Override
     
     func respond(to request: Request, chainingTo chain: Responder) throws -> Response {
-        do {
-//            let response = try chain.respond(to: request)
-//            if 200 ... 299 ~= response.status.statusCode {
-//                try validateRequest(request)
-//            }
-//            return response
-            
-            try validateRequest(request)
-            let response = try chain.respond(to: request)
-            return response
-            
-        } catch {
+        if validatePermissionsForRequest(request) {
+            return try chain.respond(to: request)
+        } else {
             if request.accept.prefers("html") {
                 let response = Response(redirect: "/login")
                 return response
             } else {
-                throw error
-            }
-        }
-    }
-    
-    func validateRequest(_ request: Request) throws {
-        if !shouldSkipTokenValidation(forRequest: request) {
-            do {
-                try validateToken(fromRequest: request)
-            } catch {
-                guard request.uri.path == "/login" else { throw error }
+                throw Abort.custom(status: .unauthorized, message: "Permission denied.")
             }
         }
     }
     
     // MARK: - Helpers
     
-    private func shouldSkipTokenValidation(forRequest request: Request) -> Bool {
-        let path = request.uri.path
+    func validatePermissionsForRequest(_ request: Request) -> Bool {
         
-        if path.contains(".css") || path.contains(".js") {
+        if isPublic(request: request) {
             return true
         }
         
+        configureUser(forRequest: request)
+        guard let user = request.user else { return false }
+        
+        let allowed = isRequestAllowed(forUser: user, request: request)
+        return allowed
+    }
+    
+    func isPublic(request: Request) -> Bool {
+        let path = request.uri.path
+        
         switch request.method {
         case .get:
-            let allowed = ["/"]
+            if path.contains(".css") || path.contains(".js") {
+                return true
+            }
+            let allowed = ["/", "/login"]
             return allowed.contains(path)
         case .post:
             let allowed = ["/users", "/login"]
@@ -68,15 +61,42 @@ class AuthMiddleware: Middleware {
         }
     }
     
-    private func validateToken(fromRequest request: Request) throws {
-        let error = Abort.custom(status: .unauthorized, message: "Permission denied.")
-        
-        guard let token = request.token else { throw error }
-        guard let session = try SessionController.validateSession(withToken: token) else { throw error }
-        guard let user = try session.user().get() else { throw error }
-        
-        request.authorized = true
+    func configureUser(forRequest request: Request) {
+        guard let token = request.token else { return }
+        guard let session = try? SessionController.validateSession(withToken: token) else { return }
+        guard let user = try? session?.user().get() else { return }
         request.user = user
+    }
+    
+    func isRequestAllowed(forUser user: User, request: Request) -> Bool {
+        guard let role = user.role else { return false }
+        
+        switch role {
+        case .Customer:
+            return isRequestAllowed(forCustomer: user, request: request)
+        case .Admin:
+            return isRequestAllowed(forAdmin: user, request: request)
+        }
+    }
+    
+    func isRequestAllowed(forCustomer user: User, request: Request) -> Bool {
+        let path = request.uri.path
+        guard let userID = user.id?.int else { return false }
+        
+        if path.contains("users/\(userID)") {
+            return true
+        }
+        
+        if request.method == .post {
+            let allowed = ["/users", "/login", "/logout"]
+            return allowed.contains(path)
+        }
+        
+        return false
+    }
+    
+    func isRequestAllowed(forAdmin: User, request: Request) -> Bool {
+        return true
     }
     
 }
@@ -91,11 +111,6 @@ extension Request {
         let token = headerToken ?? cookieToken
         
         return token
-    }
-    
-    var authorized: Bool {
-        get { return storage["authorized"] as? Bool ?? false }
-        set { storage["authorized"] = newValue }
     }
     
     var user: User? {
