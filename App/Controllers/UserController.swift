@@ -19,7 +19,17 @@ final class UserController: ResourceRepresentable {
     // MARK: - REST
     
     func index(request: Request) throws -> ResponseRepresentable {
-        return try User.all().makeResponse()
+//        return try User.all().makeResponse()
+        
+        guard let user = request.user else { throw Abort.badRequest }
+        guard let role = user.role else { throw Abort.badRequest }
+        
+        switch role {
+        case .Admin:
+            return try User.all().makeResponse()
+        case .Customer:
+            return try user.makeResponse()
+        }
     }
     
     func store(request: Request) throws -> ResponseRepresentable {
@@ -32,7 +42,11 @@ final class UserController: ResourceRepresentable {
             throw Abort.badRequest
         }
         
-        var user = User(first: first, last: last, email: email, password: password)
+        var user = User(first: first,
+                        last: last,
+                        email: email,
+                        password: password,
+                        roleID: Role.Customer.rawValue)
         try user.save()
         
         return user

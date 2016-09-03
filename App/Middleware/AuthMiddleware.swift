@@ -17,9 +17,16 @@ class AuthMiddleware: Middleware {
     
     func respond(to request: Request, chainingTo chain: Responder) throws -> Response {
         do {
+//            let response = try chain.respond(to: request)
+//            if 200 ... 299 ~= response.status.statusCode {
+//                try validateRequest(request)
+//            }
+//            return response
+            
             try validateRequest(request)
             let response = try chain.respond(to: request)
             return response
+            
         } catch {
             if request.accept.prefers("html") {
                 let response = Response(redirect: "/login")
@@ -63,9 +70,13 @@ class AuthMiddleware: Middleware {
     
     private func validateToken(fromRequest request: Request) throws {
         let error = Abort.custom(status: .unauthorized, message: "Permission denied.")
+        
         guard let token = request.token else { throw error }
-        guard SessionController.validateSession(withToken: token) else { throw error }
+        guard let session = try SessionController.validateSession(withToken: token) else { throw error }
+        guard let user = try session.user().get() else { throw error }
+        
         request.authorized = true
+        request.user = user
     }
     
 }
@@ -85,6 +96,11 @@ extension Request {
     var authorized: Bool {
         get { return storage["authorized"] as? Bool ?? false }
         set { storage["authorized"] = newValue }
+    }
+    
+    var user: User? {
+        get { return storage["user"] as? User }
+        set { storage["user"] = newValue }
     }
     
 }

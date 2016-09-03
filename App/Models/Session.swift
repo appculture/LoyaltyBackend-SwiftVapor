@@ -54,3 +54,13 @@ final class Session: Model {
     }
     
 }
+
+// MARK: - Relations
+
+extension Session {
+    
+    func user() throws -> Parent<User> {
+        return try parent(userID)
+    }
+    
+}

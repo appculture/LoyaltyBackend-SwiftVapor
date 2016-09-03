@@ -2,6 +2,11 @@ import Vapor
 import Fluent
 import HTTP
 
+enum Role: Int {
+    case Admin = 1
+    case Customer
+}
+
 final class User: Model {
     
     static var entity: String = "user"
@@ -15,13 +20,20 @@ final class User: Model {
     var email: String
     var password: String
     
+    var roleID: Int
+    
+    var role: Role? {
+        return Role(rawValue: roleID)
+    }
+    
     // MARK: - Init
     
-    init(first: String, last: String, email: String, password: String) {
+    init(first: String, last: String, email: String, password: String, roleID: Int) {
         self.first = first
         self.last = last
         self.email = email
         self.password = password
+        self.roleID = roleID
     }
     
     // MARK: - NodeConvertible
@@ -32,6 +44,7 @@ final class User: Model {
         last = try node.extract("last")
         email = try node.extract("email")
         password = try node.extract("password")
+        roleID = try node.extract("role_id")
     }
     
     func makeNode() throws -> Node {
@@ -40,7 +53,8 @@ final class User: Model {
             "first": first,
             "last": last,
             "email": email,
-            "password": password
+            "password": password,
+            "role_id": roleID
         ])
     }
     
@@ -53,9 +67,14 @@ final class User: Model {
             user.string("last")
             user.string("email")
             user.string("password")
+            user.int("role_id")
         }
         
-        var admin = User(first: "System", last: "Root", email: "admin@admin.com", password: "admin")
+        var admin = User(first: "System",
+                         last: "Root",
+                         email: "admin@admin.com",
+                         password: "admin",
+                         roleID: Role.Admin.rawValue)
         try admin.save()
     }
     

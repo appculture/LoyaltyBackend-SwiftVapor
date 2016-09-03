@@ -18,13 +18,9 @@ final class SessionController {
         return session
     }
     
-    static func validateSession(withToken token: String) -> Bool {
-        do {
-            guard let _ = try Session.query().filter("token", token).first() else { return false }
-            return true
-        } catch {
-            return false
-        }
+    static func validateSession(withToken token: String) throws -> Session? {
+        let session = try Session.query().filter("token", token).first()
+        return session
     }
     
     static func destroySession(withToken token: String) throws {
