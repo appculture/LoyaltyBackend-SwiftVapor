@@ -11,6 +11,7 @@ final class Router {
     
     func configureRoutes() {
         configureHomepage()
+        configureErrors()
         configureAuthorization()
         configureUsers()
         configurePurchases()
@@ -27,6 +28,23 @@ extension Router {
         drop.get("/") { request in
             return try self.drop.view("home.mustache")
         }
+    }
+    
+}
+
+// MARK: - Errors
+
+extension Router {
+    
+    func configureErrors() {
+        /// - NOTE: remove default AbortMiddleware
+        if let abortMiddlewareIndex = drop.middleware.index(where: { $0 is AbortMiddleware }) {
+            drop.middleware.remove(at: abortMiddlewareIndex)
+        }
+        
+        /// replace it with custom ErrorMiddleware
+        let errorMiddleware = ErrorMiddleware(droplet: drop)
+        drop.middleware.append(errorMiddleware)
     }
     
 }
