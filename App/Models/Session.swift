@@ -44,9 +44,12 @@ final class Session: Model {
     static func prepare(_ database: Fluent.Database) throws {
         try database.create(entity) { session in
             session.id()
-            session.string("user_id")
+            session.int("user_id")
             session.string("token")
         }
+        
+        let sql = "ALTER TABLE session ADD CONSTRAINT fk_user_session FOREIGN KEY (user_id) REFERENCES user(id);"
+        try database.driver.raw(sql)
     }
     
     static func revert(_ database: Fluent.Database) throws {

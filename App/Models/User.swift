@@ -70,10 +70,16 @@ final class User: Model {
             user.int("role_id")
         }
         
+        try database.driver.raw("ALTER TABLE user ADD CONSTRAINT uc_email UNIQUE (email);")
+        
         try addSampleData()
     }
     
     static func revert(_ database: Fluent.Database) throws {
+        try database.driver.raw("ALTER TABLE session DROP FOREIGN KEY fk_user_session;")
+        try database.driver.raw("ALTER TABLE purchase DROP FOREIGN KEY fk_user_purchase;")
+        try database.driver.raw("ALTER TABLE voucher DROP FOREIGN KEY fk_user_voucher;")
+        
         try database.delete(entity)
     }
     

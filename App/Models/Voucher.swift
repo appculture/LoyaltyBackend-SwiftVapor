@@ -91,6 +91,9 @@ final class Voucher: Model {
             voucher.int("redeemed")
             voucher.int("user_id")
         }
+        
+        let sql = "ALTER TABLE voucher ADD CONSTRAINT fk_user_voucher FOREIGN KEY (user_id) REFERENCES user(id);"
+        try database.driver.raw(sql)
     }
     
     static func revert(_ database: Fluent.Database) throws {

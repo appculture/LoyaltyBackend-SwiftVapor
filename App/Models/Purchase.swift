@@ -61,6 +61,9 @@ final class Purchase: Model {
             purchase.double("loyalty_amount")
             purchase.int("user_id")
         }
+        
+        let sql = "ALTER TABLE purchase ADD CONSTRAINT fk_user_purchase FOREIGN KEY (user_id) REFERENCES user(id);"
+        try database.driver.raw(sql)
     }
     
     static func revert(_ database: Fluent.Database) throws {
