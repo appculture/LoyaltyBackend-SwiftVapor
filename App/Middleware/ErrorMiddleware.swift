@@ -32,7 +32,7 @@ class ErrorMiddleware: Middleware {
             case Abort.custom(let status, let message):
                 response = try self.errorResponse(status, message: message, view: view)
             default:
-                response = try self.errorResponse(.internalServerError, message: error.localizedDescription, view: view)
+                response = try self.errorResponse(.internalServerError, message: "\(error)", view: view)
             }
             
             return response
