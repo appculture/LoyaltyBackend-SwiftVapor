@@ -5,11 +5,17 @@ final class VoucherController: ResourceRepresentable {
     
     typealias Item = Voucher
     
+    // MARK: - Properties
+    
     let drop: Droplet
+    
+    // MARK: - Init
     
     init(droplet: Droplet) {
         drop = droplet
     }
+    
+    // MARK: - REST
     
     func index(request: Request) throws -> ResponseRepresentable {
         return try Voucher.all().makeResponse()
@@ -17,13 +23,12 @@ final class VoucherController: ResourceRepresentable {
     
     func store(request: Request) throws -> ResponseRepresentable {
         guard
-            let customerID = request.data["customer_id"].int
+            let userID = request.data["user_id"].int
         else {
             throw Abort.badRequest
         }
         
-        var voucher = Voucher(customerID: Node(customerID))
-        
+        var voucher = try Voucher(userID: Node(userID))
         try voucher.save()
         
         return voucher
@@ -53,6 +58,8 @@ final class VoucherController: ResourceRepresentable {
     
 }
 
+// MARK: - Config
+
 extension VoucherController {
     
     var config: VoucherConfig? {
@@ -79,7 +86,7 @@ extension VoucherController {
         guard
             let purchaseAmount = request.data["purchase_amount"].double,
             let voucherValue = request.data["voucher_value"].double,
-            let voucherDuration = request.data["voucher_duration"].int
+            let voucherDuration = request.data["voucher_duration"].double
         else {
             throw Abort.badRequest
         }

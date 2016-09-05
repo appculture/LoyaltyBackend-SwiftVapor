@@ -11,7 +11,7 @@ let mustache = VaporMustache.Provider(withIncludes: [
     "footer" : "Includes/footer.mustache"
 ])
 
-let preparations: [Preparation.Type] = [Customer.self, Purchase.self, Voucher.self, VoucherConfig.self, CustomerSession.self, User.self, UserSession.self]
+let preparations: [Preparation.Type] = [User.self, Session.self, Purchase.self, Voucher.self, VoucherConfig.self]
 let providers: [Vapor.Provider.Type] = [VaporMySQL.Provider.self]
 
 let drop = Droplet(preparations: preparations, providers: providers, initializedProviders: [mustache])
@@ -22,7 +22,5 @@ let router = Router(droplet: drop)
 router.configureRoutes()
 
 // MARK: - Serve Droplet
-
-let port = drop.config["app", "port"].int ?? 80
 
 drop.serve()

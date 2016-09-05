@@ -17,14 +17,15 @@ final class Voucher: Model {
     
     var redeemed: Int
     
-    var customerID: Node
+    var userID: Node
     
     var redeemedBool: Bool {
         return redeemed > 0 ? true : false
     }
     var expiredBool: Bool {
-        let now = Int(Date().timeIntervalSince1970)
-        return now > expiration
+        let now = Date()
+        let date = Int(now.timeIntervalSince1970)
+        return date > expiration
     }
     var valid: Bool {
         return !redeemedBool && !expiredBool
@@ -32,25 +33,29 @@ final class Voucher: Model {
     
     // MARK: - Init
     
-    convenience init(customerID: Node) {
+    convenience init(userID: Node) throws {
+        guard let config = try VoucherConfig.all().first else {
+            throw Abort.serverError
+        }
+        
         let now = Date()
-        let future = now + 360
+        let future = now + config.voucherDuration
         
         let timestamp = Int(now.timeIntervalSince1970)
         let expiration = Int(future.timeIntervalSince1970)
-        let value = 5.0
+        let value = config.voucherValue
         
         let redeemed = 0
         
-        self.init(timestamp: timestamp, expiration: expiration, value: value, redeemed: redeemed, customerID: customerID)
+        self.init(timestamp: timestamp, expiration: expiration, value: value, redeemed: redeemed, userID: userID)
     }
     
-    init(timestamp: Int, expiration: Int, value: Double, redeemed: Int, customerID: Node) {
+    init(timestamp: Int, expiration: Int, value: Double, redeemed: Int, userID: Node) {
         self.timestamp = timestamp
         self.expiration = expiration
         self.value = value
         self.redeemed = redeemed
-        self.customerID = customerID
+        self.userID = userID
     }
     
     // MARK: - NodeConvertible
@@ -61,7 +66,7 @@ final class Voucher: Model {
         expiration = try node.extract("expiration")
         value = try node.extract("value")
         redeemed = try node.extract("redeemed")
-        customerID = try node.extract("customer_id")
+        userID = try node.extract("user_id")
     }
     
     func makeNode() throws -> Node {
@@ -71,7 +76,7 @@ final class Voucher: Model {
             "expiration": expiration,
             "value": value,
             "redeemed": redeemed,
-            "customer_id": customerID
+            "user_id": userID
         ])
     }
     
@@ -84,8 +89,11 @@ final class Voucher: Model {
             voucher.int("expiration")
             voucher.double("value")
             voucher.int("redeemed")
-            voucher.int("customer_id")
+            voucher.int("user_id")
         }
+        
+        let sql = "ALTER TABLE voucher ADD CONSTRAINT fk_user_voucher FOREIGN KEY (user_id) REFERENCES user(id);"
+        try database.driver.raw(sql)
     }
     
     static func revert(_ database: Fluent.Database) throws {
@@ -98,8 +106,8 @@ final class Voucher: Model {
 
 extension Voucher {
     
-    func customer() throws -> Parent<Customer> {
-        return try parent(customerID)
+    func user() throws -> Parent<User> {
+        return try parent(userID)
     }
     
 }
@@ -116,7 +124,7 @@ extension Voucher {
             "value": value,
             "redeemed": redeemedBool,
             "expired": expiredBool,
-            "customer_id": customerID.int ?? -1
+            "user_id": userID.int ?? -1
         ] as [String : JSONRepresentable])
     }
     
@@ -131,21 +139,13 @@ extension Voucher {
 extension Response {
     
     var voucher: Voucher? {
-        get {
-            return storage["voucher"] as? Voucher
-        }
-        set(voucher) {
-            storage["voucher"] = voucher
-        }
+        get { return storage["voucher"] as? Voucher }
+        set { storage["voucher"] = newValue }
     }
     
     var vouchers: [Voucher]? {
-        get {
-            return storage["vouchers"] as? [Voucher]
-        }
-        set(vouchers) {
-            storage["vouchers"] = vouchers
-        }
+        get { return storage["vouchers"] as? [Voucher] }
+        set { storage["vouchers"] = newValue }
     }
     
 }

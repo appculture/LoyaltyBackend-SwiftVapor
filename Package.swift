@@ -16,4 +16,3 @@ let package = Package(
         "Tests",
     ]
 )
-
