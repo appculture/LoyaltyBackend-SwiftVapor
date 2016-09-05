@@ -43,7 +43,7 @@ final class Voucher: Model {
         
         let timestamp = Int(now.timeIntervalSince1970)
         let expiration = Int(future.timeIntervalSince1970)
-        let value = 5.0
+        let value = config.voucherValue
         
         let redeemed = 0
         
