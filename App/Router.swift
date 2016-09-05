@@ -37,7 +37,7 @@ extension Router {
 extension Router {
     
     func configureErrors() {
-        /// - NOTE: remove default AbortMiddleware
+        /// - NOTE: removing default AbortMiddleware
         if let abortMiddlewareIndex = drop.middleware.index(where: { $0 is AbortMiddleware }) {
             drop.middleware.remove(at: abortMiddlewareIndex)
         }

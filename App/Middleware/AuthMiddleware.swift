@@ -20,8 +20,7 @@ class AuthMiddleware: Middleware {
             return try chain.respond(to: request)
         } else {
             if request.accept.prefers("html") {
-                let response = Response(redirect: "/login")
-                return response
+                return try drop.view("login.mustache").makeResponse()
             } else {
                 throw Abort.custom(status: .unauthorized, message: "Permission denied.")
             }
@@ -51,7 +50,7 @@ class AuthMiddleware: Middleware {
             if path.contains(".css") || path.contains(".js") {
                 return true
             }
-            let allowed = ["/", "/login"]
+            let allowed = ["/"]
             return allowed.contains(path)
         case .post:
             let allowed = ["/users", "/login"]
@@ -106,7 +105,7 @@ extension Request {
     var token: String? {
         /// - NOTE: Vapor.Session is not working properly in this version (0.16.2). Leave that for later...
         
-        let headerToken = data["token"]?.string
+        let headerToken = headers["token"]?.string
         let cookieToken = cookies.array.filter({ $0.name.trim() == "token"}).first?.value
         let token = headerToken ?? cookieToken
         

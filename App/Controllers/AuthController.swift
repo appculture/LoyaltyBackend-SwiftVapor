@@ -24,23 +24,32 @@ final class AuthController {
         }
         
         guard
-            let user = try User.query().filter("email", username).first()
+            let user = try User.query().filter("email", username).first(),
+            let role = user.role
         else {
             throw Abort.custom(status: Status.forbidden, message: "User not found.")
         }
         
         let hashedPassword = drop.hash.make(password)
-        
-        if user.password == hashedPassword {
-            let session = try SessionController.createSession(forUser: user)
-            
-            let response = Response(redirect: "/users")
-            response.cookies.insert(session.cookie)
-            
-            return response
-        }
+        guard user.password == hashedPassword
         else {
-            throw Abort.custom(status: Status.forbidden, message: "Wrong Password.")
+            throw Abort.custom(status: Status.forbidden, message: "Password incorrect.")
+        }
+        
+        let session = try SessionController.establishSession(forUser: user)
+        let jsonResponse = try JSON([ "token": session.token ])
+        
+        if request.accept.prefers("html") {
+            switch role {
+            case .Admin:
+                let response = Response(redirect: "/users")
+                response.cookies.insert(session.cookie)
+                return response
+            case .Customer:
+                throw Abort.custom(status: Status.forbidden, message: "Access denied.")
+            }
+        } else {
+            return jsonResponse
         }
     }
     
@@ -51,8 +60,13 @@ final class AuthController {
         /// - NOTE: Removing cookies is not working in Vapor 0.16.2.
         request.cookies.removeAll()
         
-        let response = Response(redirect: "/")
-        return response
+        if request.accept.prefers("html") {
+            let response = Response(redirect: "/")
+            return response
+        } else {
+            let response = try Response(status: .ok, json: JSON(["message": "OK"]))
+            return response
+        }
     }
     
 }
