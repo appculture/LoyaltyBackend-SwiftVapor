@@ -70,16 +70,29 @@ final class User: Model {
             user.int("role_id")
         }
         
+        try addSampleData()
+    }
+    
+    static func revert(_ database: Fluent.Database) throws {
+        try database.delete(entity)
+    }
+    
+    // MARK: - Helpers
+    
+    static func addSampleData() throws {
         var admin = User(first: "System",
                          last: "Root",
                          email: "admin@admin.com",
                          password: drop.hash.make("admin"),
                          roleID: Role.Admin.rawValue)
         try admin.save()
-    }
-    
-    static func revert(_ database: Fluent.Database) throws {
-        try database.delete(entity)
+        
+        var customer = User(first: "Test",
+                            last: "Customer",
+                            email: "test@test.com",
+                            password: drop.hash.make("test"),
+                            roleID: Role.Customer.rawValue)
+        try customer.save()
     }
     
 }
