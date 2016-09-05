@@ -32,12 +32,14 @@ final class UserController: ResourceRepresentable {
             throw Abort.badRequest
         }
         
-        let hashedPassword = drop.hash.make(password)
+        if let user = try? User.query().filter("email", contains: email).first(), user != nil {
+            throw Abort.custom(status: Status.notAcceptable, message: "User already exists.")
+        }
         
         var user = User(first: first,
                         last: last,
                         email: email,
-                        password: hashedPassword,
+                        password: drop.hash.make(password),
                         roleID: Role.Customer.rawValue)
         try user.save()
         
@@ -63,7 +65,7 @@ final class UserController: ResourceRepresentable {
         changedUser.first = first
         changedUser.last = last
         changedUser.email = email
-        changedUser.password = password
+        changedUser.password = drop.hash.make(password)
         
         try changedUser.save()
         
@@ -72,7 +74,8 @@ final class UserController: ResourceRepresentable {
     
     func destroy(request: Request, item user: User) throws -> ResponseRepresentable {
         try user.delete()
-        return user
+        let response = try Response(status: .ok, json: JSON(["message": "OK"]))
+        return response
     }
     
     func makeResource() -> Resource<User> {

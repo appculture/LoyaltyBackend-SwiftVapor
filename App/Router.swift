@@ -11,8 +11,8 @@ final class Router {
     
     func configureRoutes() {
         configureHomepage()
-        configureErrors()
         configureAuthorization()
+        configureErrors()
         configureUsers()
         configurePurchases()
         configureVouchers()
@@ -32,24 +32,7 @@ extension Router {
     
 }
 
-// MARK: - Errors
-
-extension Router {
-    
-    func configureErrors() {
-        /// - NOTE: removing default AbortMiddleware
-        if let abortMiddlewareIndex = drop.middleware.index(where: { $0 is AbortMiddleware }) {
-            drop.middleware.remove(at: abortMiddlewareIndex)
-        }
-        
-        /// replace it with custom ErrorMiddleware
-        let errorMiddleware = ErrorMiddleware(droplet: drop)
-        drop.middleware.append(errorMiddleware)
-    }
-    
-}
-
-// MARK: - Login
+// MARK: - Auth
 
 extension Router {
     
@@ -74,6 +57,23 @@ extension Router {
         drop.post("logout") { request in
             return try authController.logout(request: request)
         }
+    }
+    
+}
+
+// MARK: - Errors
+
+extension Router {
+    
+    func configureErrors() {
+        /// - NOTE: removing default AbortMiddleware
+        if let abortMiddlewareIndex = drop.middleware.index(where: { $0 is AbortMiddleware }) {
+            drop.middleware.remove(at: abortMiddlewareIndex)
+        }
+        
+        /// replace that with custom ErrorMiddleware
+        let errorMiddleware = ErrorMiddleware(droplet: drop)
+        drop.middleware.append(errorMiddleware)
     }
     
 }
