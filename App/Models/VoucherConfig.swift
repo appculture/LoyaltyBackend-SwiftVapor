@@ -7,7 +7,7 @@ final class VoucherConfig: Model {
     
     static var entity: String = "voucher_config"
     
-    static var `default` = VoucherConfig(purchaseAmount: 100.0, voucherValue: 5.0, voucherDuration: 360.0)
+    static var `default` = VoucherConfig(purchaseAmount: 100.0, voucherValue: 10.0, voucherDuration: 600.0)
     
     // MARK: - Properties
     

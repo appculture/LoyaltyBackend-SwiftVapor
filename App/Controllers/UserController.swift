@@ -2,7 +2,9 @@ import Vapor
 import HTTP
 import Foundation
 
-final class UserController {
+final class UserController: ResourceRepresentable {
+    
+    typealias Item = User
     
     // MARK: - Properties
     
@@ -14,69 +16,103 @@ final class UserController {
         drop = droplet
     }
     
-    // MARK: - Login / Logout
+    // MARK: - REST
     
-    func login(request: Request) throws -> ResponseRepresentable {
-        guard
-            let username = request.data["email"]?.string,
-            let password = request.data["password"]?.string
-        else {
-            throw Abort.custom(status: .notFound, message: "User not found!")
-        }
-        
-        guard
-            let user = try User.query().filter("email", username).first(),
-            let userID = user.id
-        else {
-            throw Abort.custom(status: Status.notImplemented, message: "No Customer")
-        }
-        
-        if user.password == password {
-            #if os(Linux)
-                let randomUUID = NSUUID().UUIDString
-            #else
-                let randomUUID = NSUUID().uuidString
-            #endif
-            
-            let response = Response(redirect: "/customers")
-            let cookie = Cookie(name: "user", value: userID.string!)
-            response.cookies.insert(cookie)
-            
-            guard
-                let _ = try UserSession.query().filter("user_id", userID).first()
-            else {
-                var userSession = UserSession(token: randomUUID, userID: userID)
-                try userSession.save()
-                return response
-            }
-
-            return response
-        }
-        else {
-            throw Abort.custom(status: Status.internalServerError, message: "Wrong Password")
-        }
+    func index(request: Request) throws -> ResponseRepresentable {
+        return try User.all().makeResponse()
     }
     
-    func logout(request: Request) throws -> ResponseRepresentable {
-        var userID = ""
-        let cookieArray = request.cookies.array
-        for cookie in cookieArray {
-            if cookie.name == "user" {
-                userID = cookie.value
-            }
-        }
-        
+    func store(request: Request) throws -> ResponseRepresentable {
         guard
-            let previousSession = try UserSession.query().filter("user_id", userID).first()
+            let first = request.data["first"].string,
+            let last = request.data["last"].string,
+            let email = request.data["email"].string,
+            let password = request.data["password"].string
         else {
-            throw Abort.custom(status: Status.internalServerError, message: "Server Error!")
+            throw Abort.badRequest
         }
         
-        try previousSession.delete()
+        if let user = try? User.query().filter("email", contains: email).first(), user != nil {
+            throw Abort.custom(status: Status.notAcceptable, message: "User already exists.")
+        }
         
-        let response = Response(redirect: "/")
-        response.cookies.removeAll()
+        var user = User(first: first,
+                        last: last,
+                        email: email,
+                        password: drop.hash.make(password),
+                        roleID: Role.Customer.rawValue)
+        try user.save()
+        
+        return user
+    }
+    
+    func show(request: Request, item user: User) throws -> ResponseRepresentable {
+        return user
+    }
+    
+    func update(request: Request, item user: User) throws -> ResponseRepresentable {
+        guard
+            let first = request.data["first"].string,
+            let last = request.data["last"].string,
+            let email = request.data["email"].string,
+            let password = request.data["password"].string
+        else {
+            throw Abort.badRequest
+        }
+        
+        var changedUser = user
+        
+        changedUser.first = first
+        changedUser.last = last
+        changedUser.email = email
+        changedUser.password = drop.hash.make(password)
+        
+        try changedUser.save()
+        
+        return changedUser
+    }
+    
+    func destroy(request: Request, item user: User) throws -> ResponseRepresentable {
+        try user.delete()
+        let response = try Response(status: .ok, json: JSON(["message": "OK"]))
         return response
+    }
+    
+    func makeResource() -> Resource<User> {
+        return Resource(
+            index: index,
+            store: store,
+            show: show,
+            replace: update,
+            destroy: destroy
+        )
+    }
+    
+}
+
+// MARK: - Purchases / Vouchers
+
+extension UserController {
+    
+    func getPurchases(request: Request, user: User) throws -> ResponseRepresentable {
+        let allPurchases = try user.purchases().all()
+        let total = allPurchases.reduce(0.0) {$0 + ($1.cashAmount + $1.loyaltyAmount)}
+        
+        return try JSON([
+            "purchases": allPurchases.makeJSON(),
+            "total": total
+        ])
+    }
+    
+    func getVouchers(request: Request, user: User) throws -> ResponseRepresentable {
+        let allVouchers = try user.vouchers().all()
+        let validVouchers = allVouchers.filter { $0.valid }
+        let balance = validVouchers.reduce(0.0) {$0 + $1.value}
+        
+        return try JSON([
+            "vouchers": allVouchers.makeJSON(),
+            "balance": balance
+        ])
     }
     
 }

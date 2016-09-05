@@ -15,20 +15,20 @@ final class Purchase: Model {
     var cashAmount: Double
     var loyaltyAmount: Double
     
-    var customerID: Node
+    var userID: Node
     
     // MARK: - Init
     
-    convenience init(cashAmount: Double, loyaltyAmount: Double, customerID: Node) {
+    convenience init(cashAmount: Double, loyaltyAmount: Double, userID: Node) {
         let timestamp = Int(Date().timeIntervalSince1970)
-        self.init(timestamp: timestamp, cashAmount: cashAmount, loyaltyAmount: loyaltyAmount, customerID: customerID)
+        self.init(timestamp: timestamp, cashAmount: cashAmount, loyaltyAmount: loyaltyAmount, userID: userID)
     }
     
-    init(timestamp: Int, cashAmount: Double, loyaltyAmount: Double, customerID: Node) {
+    init(timestamp: Int, cashAmount: Double, loyaltyAmount: Double, userID: Node) {
         self.timestamp = timestamp
         self.cashAmount = cashAmount
         self.loyaltyAmount = loyaltyAmount
-        self.customerID = customerID
+        self.userID = userID
     }
     
     // MARK: - NodeConvertible
@@ -38,7 +38,7 @@ final class Purchase: Model {
         timestamp = try node.extract("timestamp")
         cashAmount = try node.extract("cash_amount")
         loyaltyAmount = try node.extract("loyalty_amount")
-        customerID = try node.extract("customer_id")
+        userID = try node.extract("user_id")
     }
     
     func makeNode() throws -> Node {
@@ -47,7 +47,7 @@ final class Purchase: Model {
             "timestamp": timestamp,
             "cash_amount": cashAmount,
             "loyalty_amount": loyaltyAmount,
-            "customer_id": customerID
+            "user_id": userID
         ])
     }
     
@@ -59,7 +59,7 @@ final class Purchase: Model {
             purchase.int("timestamp")
             purchase.double("cash_amount")
             purchase.double("loyalty_amount")
-            purchase.int("customer_id")
+            purchase.int("user_id")
         }
     }
     
@@ -73,8 +73,8 @@ final class Purchase: Model {
 
 extension Purchase {
     
-    func customer() throws -> Parent<Customer> {
-        return try parent(customerID)
+    func user() throws -> Parent<User> {
+        return try parent(userID)
     }
     
 }
