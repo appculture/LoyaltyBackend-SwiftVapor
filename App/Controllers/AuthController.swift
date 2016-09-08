@@ -37,7 +37,10 @@ final class AuthController {
         }
         
         let session = try SessionController.establishSession(forUser: user)
-        let jsonResponse = try JSON([ "token": session.token ])
+        let jsonResponse = try JSON([
+            "user_id": user.id?.int ?? -1,
+            "token": session.token
+        ])
         
         if request.accept.prefers("html") {
             switch role {
