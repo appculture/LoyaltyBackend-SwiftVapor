@@ -1,3 +1,28 @@
+# Loyalty Backend Hackathon
+**Swift Vapor backend solution for the 1st appculture hackathon**
+
+> **Brought to you by**  
+> 
+> <a href="http://appculture.com"><img src="http://appculture.com/wp-content/uploads/2015/11/appculture.svg" width="256"/></a>
+
+> This is what happens when bunch of mobile devs gets to work on a backend hackathon:  
+- iOS team chose to use Swift (everybody laughed)  
+- iOS team won (it was very close and totally unexpected)
+
+As you can guess from title, the goal was to make a simple loyalty backend solution with some admin frontend and a client mobile app, you can see more about [scope here](Resources/Documentation/Scope.pdf).
+
+Our team choose to use relatively new Swift web framework called [Vapor](http://vapor.codes).  
+While it was hard to keep up with very rapid development of Vapor *(we had bad timing for this hackathon - just before Swift 3 is out of beta)*, we must say we were delighted with it, but also with all the help we got on Slack from the guys who are making it.
+
+**We decided to publish this repo for all the people that are learning to use Vapor.**  
+Commit `f3bafb1` won on hackathon, later we just added some simple authentication and refactored code a little bit. Keep in mind that we're primarly mobile developers (iOS Team speaking), but you can probably find some currently undocumented Vapor stuff in this project that may help you *(made with Vapor version 0.16.2)*.
+
+You can see our admin frontend on [Heroku](http://royalty-loyalty.herokuapp.com), and our API is added as a [paw file](Resources/Documentation/Royalty.paw) inside project.
+
+P.S. Please replace `Config/mysql.json` with `Config/mysql-local.json` if you wanna try something 'risky'. :)
+
+Below is a default Vapor readme content, cheers! 🍻
+
 # Vapor Example
 
 Fork this example project as a boilerplate for working with Vapor.
